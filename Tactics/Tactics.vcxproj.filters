@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ecs">
+      <UniqueIdentifier>{3ee5142b-babb-4be8-8fc1-1fc93d25f693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs">
+      <UniqueIdentifier>{64a71838-72b0-4800-a1b3-a8a1fb2aeb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests">
+      <UniqueIdentifier>{6ee7d350-3a1c-4f37-ae13-e614e05bc225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\ecs">
+      <UniqueIdentifier>{60dbf2f1-18c7-4fc8-a6e8-aa626cf1cfc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems">
+      <UniqueIdentifier>{ab0fc863-56ce-41f1-a67d-bd8a9121af4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{7d458093-f74e-47d5-98c7-e55983769ace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities">
+      <UniqueIdentifier>{afe60135-5c54-4b15-946d-cd701d1f2969}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Components">
+      <UniqueIdentifier>{04be0553-4fa2-4968-a2f5-c5bcc6628f88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Systems\General">
+      <UniqueIdentifier>{63275294-4bde-49d5-aa0f-72c9a2eed8cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\General">
+      <UniqueIdentifier>{cb674589-14a1-4956-9093-e3f337ab8e2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{843fed8d-8356-460b-abad-71fc1855bb32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entities">
+      <UniqueIdentifier>{d89ecbfe-82fe-47c1-b99c-b87eb805e326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{6023a847-e2d3-4f16-a9cd-09cf922e14f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{67b07955-566d-4f63-8bde-b330f9eb94c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{673e8252-4fe3-4a86-8680-ccaac922ad27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\simple">
+      <UniqueIdentifier>{69361854-df06-4bf5-aac5-88c78a88e748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\toon1">
+      <UniqueIdentifier>{e8b4cf1c-48f0-4df9-a0f9-e5bf668a002a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Concepts">
+      <UniqueIdentifier>{1054f029-35bd-41ef-b851-efad335fbaa4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Concepts">
+      <UniqueIdentifier>{7fdb2ef3-5304-40cd-947f-7cfeda8bfb7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ecs\multithreaded">
+      <UniqueIdentifier>{aa7e3ecc-86ff-4c12-9621-2dcc35beee59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ecs\multithreaded">
+      <UniqueIdentifier>{830e4c8d-cea5-4a85-9310-94df24738916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Worlds">
+      <UniqueIdentifier>{b279d269-47f1-4657-bf6e-ea70ff3cfc2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Worlds">
+      <UniqueIdentifier>{9486d421-d6ed-4be0-869e-7277a9753bbe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentTest.cpp">
+      <Filter>Source Files\Tests\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityTest.cpp">
+      <Filter>Source Files\Tests\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="EventTest.cpp">
+      <Filter>Source Files\Tests\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Source Files\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemTest.cpp">
+      <Filter>Source Files\Tests\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="ClockSystem.cpp">
+      <Filter>Source Files\Systems\General</Filter>
+    </ClCompile>
+    <ClCompile Include="SetupRandomBattleSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object3D.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowManager.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJLoader.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Concepts</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\Concepts</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawLoop.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicDrawSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="GLVector.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadedWorld.cpp">
+      <Filter>Source Files\ecs\multithreaded</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadedSystem.cpp">
+      <Filter>Source Files\ecs\multithreaded</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXTest.cpp">
+      <Filter>Source Files\Tests\ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedCubeWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedCubeWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalAnimation.cpp">
+      <Filter>Source Files\Concepts</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\simple\fragment.glsl">
+      <Filter>Resource Files\shaders\simple</Filter>
+    </None>
+    <None Include="shaders\simple\vertex.glsl">
+      <Filter>Resource Files\shaders\simple</Filter>
+    </None>
+    <None Include="shaders\toon1\fragment.glsl">
+      <Filter>Resource Files\shaders\toon1</Filter>
+    </None>
+    <None Include="shaders\toon1\vertex.glsl">
+      <Filter>Resource Files\shaders\toon1</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Positionable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ClockSystem.h">
+      <Filter>Header Files\Systems\General</Filter>
+    </ClInclude>
+    <ClInclude Include="EventedSystem.h">
+      <Filter>Header Files\Systems\General</Filter>
+    </ClInclude>
+    <ClInclude Include="TimedFiringSystem.h">
+      <Filter>Header Files\Systems\General</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupRandomBattleSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object3D.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files\ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowManager.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Program.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyInputSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawLoop.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicDrawSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="GLVector.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelStore.h">
+      <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadedWorld.h">
+      <Filter>Header Files\ecs\multithreaded</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadedSystem.h">
+      <Filter>Header Files\ecs\multithreaded</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletalAnimation.h">
+      <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="FBX.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWorldSelector.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedCubeWorld.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicWorld.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedCubeWorld.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
