@@ -43,6 +43,8 @@ namespace Tactics {
 			std::map<std::string, unsigned int> name_id; // map of names to ids
 			std::vector<Tactics::SkeletalAnimation::Bone> bones; // default bone info
 
+			glm::mat4 armatureRotation; // local rotation of armature object. can be used to correct axes
+
 			int tick_ms = 30; // duration of one frame
 			double anim_start = 0; // starting time of current animation
 

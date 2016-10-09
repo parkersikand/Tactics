@@ -25,9 +25,13 @@ map<string, pair<string, string> > readProperties60(istream & in) {
 	for (int i = 0; i < 71; i++) {
 		in >> buf;
 		assert(buf == "Property:");
-		in >> key;
-		key = key.substr(1, key.length() - 3);
-		in >> type;
+//		in >> key;
+//		key = key.substr(1, key.length() - 3);
+		quotedString(in, key);
+		in.get();
+		//in >> type;
+		quotedString(in, type);
+		in.get();
 		getline(in, value);
 		out[key] = make_pair(type, value);
 	}
@@ -350,7 +354,34 @@ void ParseKeyframes(istream & in, vector<KF> & keyframes) {
 
 } // ParseKeyFrames
 
-
+Bone ParseBoneNode(istream & in) {
+	Bone bone;
+	string buf;
+	auto pos = in.tellg();
+	while (in >> buf && buf != "Properties60:") pos = in.tellg();
+	in.seekg(pos);
+	auto p60 = readProperties60(in);
+	
+	smatch vecMatch;
+	// translation
+	auto str = p60["Lcl Translation"].second;
+	regex_match(str, vecMatch, regex(".*(-?\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.\\d+)"));
+	assert(vecMatch.size() == 4);
+	bone.translation = glm::translate(glm::mat4(), glm::vec3(stof(vecMatch[1]), stof(vecMatch[2]), stof(vecMatch[3])));
+	// scale
+	regex_match(p60["Lcl Scaling"].second, vecMatch, regex(".*(-?\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.\\d+)"));
+	assert(vecMatch.size() == 4);
+	bone.scale = glm::scale(glm::mat4(), glm::vec3(stof(vecMatch[1]), stof(vecMatch[2]), stof(vecMatch[3])));
+	// rotation
+	regex_match(p60["Lcl Rotation"].second, vecMatch, regex(".*(-?\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.\\d+)"));
+	assert(vecMatch.size() == 4);
+	bone.rotation =
+		glm::rotate(glm::mat4(), stof(vecMatch[1]), glm::vec3(1, 0, 0))
+		* glm::rotate(glm::mat4(), stof(vecMatch[2]), glm::vec3(0, 1, 0))
+		* glm::rotate(glm::mat4(), stof(vecMatch[3]), glm::vec3(0, 0, 1));
+	while (in >> buf && buf != "}");
+	return bone;
+}
 
 bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::Components::SkeletalAnimation * sa, Tactics::Components::CObject3D * o3d, const char * meshname) {
 
@@ -361,6 +392,9 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 	map<string, map<int, float>> bone_weights;
 	map<string, vector<string>> bone_hierarchy;
 	vector<KF> keyframes;
+
+	// map of bone names to bone objects
+	map<string, Bone> name_bones;
 
 	string buf;
 	while (in >> buf) {
@@ -387,6 +421,21 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 			// skip over relations section
 			while (in >> buf && buf != ";");
 		}
+		else if (buf == "Model:") {
+			// check if this is a limb
+			std::string name, check;
+			quotedString(in, name);
+			in.get(); // discard ','
+			quotedString(in, check);
+			if (check == "Limb") {
+				// extract bone name
+				smatch boneNameMatch;
+				regex_match(name, boneNameMatch, regex("Model::(\\w+)"));
+				assert(boneNameMatch.size() == 2);
+				in.seekg(pos);
+				name_bones[boneNameMatch[1]] = ParseBoneNode(in);
+			}
+		}
 		pos = in.tellg();
 	} // while in >> buf
 
@@ -397,6 +446,7 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 	int i = 0;
 	for (auto const & p : bone_weights) {
 		bone_idxs[p.first] = i;
+		sa->bones[i] = name_bones[p.first];
 		sa->bones[i].boneName = p.first;
 		i++;
 	}
@@ -433,6 +483,9 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 	}
 
 	sa->hierarchy = bone_hierarchy;
+
+	// set armature rotation
+	sa->armatureRotation = name_bones["Armature"].rotation;
 
 	// copy data to GPU
 	glGenBuffers(1, &sa->vertexBoneInfoVBO);

@@ -3,6 +3,7 @@
 #ifndef __TACTICS_UTIL_H__
 #define __TACTICS_UTIL_H__
 
+#include <GL/glew.h>
 #include "GLFW/glfw3.h"
 
 #include "Object3D.h"

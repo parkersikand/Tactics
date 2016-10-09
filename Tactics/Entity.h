@@ -8,6 +8,7 @@
 #include "Constants.h"
 
 #include <vector>
+#include <set>
 
 namespace Tactics {
 
@@ -20,7 +21,12 @@ namespace Tactics {
 		typedef unsigned int EntityHdl;
 
 		// An entity is a composition of Components
+		// TODO allow construct to create/manage child entities. Currently, they get orphaned.
 		struct Entity {
+			
+			// no default constructor, since an entity is meaningless without a world
+			Entity(World &);
+
 			ComponentMask getMask() const { return *mask; };
 			EntityHdl getHandle() const { return hdl; }
 
@@ -44,6 +50,12 @@ namespace Tactics {
 			void removeComponent() {
 				world->removeComponent<ComponentType>(hdl);
 			}
+
+			// add a child entity
+			EntityHdl newChild();
+
+			// destroy this entity and children
+			void destroy();
 
 		protected:
 			// the world we belong to
@@ -105,6 +117,12 @@ namespace Tactics {
 			EntityHdl newEntity() {
 				idx++;
 				return idx - 1;
+			}
+
+			template <typename EntityType>
+			EntityHdl newTypedEntity() {
+				EntityType e(*this);
+				return e.getHandle();
 			}
 
 			// Return handles that match this mask exactly
@@ -173,6 +191,15 @@ namespace Tactics {
 				return ptr;
 			}
 
+			// remove an entity from the world
+			void removeEntity(EntityHdl);
+
+			// create child
+			EntityHdl createChildEntity(EntityHdl parent);
+
+			// set parent-child relationship
+			void setParentChild(EntityHdl parent, EntityHdl child);
+
 		private:
 			unsigned int starting_size = 1024; // allocate space for 1024 entities
 
@@ -181,6 +208,7 @@ namespace Tactics {
 			// The index of the next available entity
 			unsigned int idx = 1;
 
+			// TODO implement these
 			void resize();
 			void grow();
 			void shrink();
@@ -215,6 +243,9 @@ namespace Tactics {
 
 			// global systems. can only be one of a given type
 			System *globalSystems[ECS_MAX_SYSTEM_TYPES] = { NULL };
+
+			// Entity hierarchy
+			std::map<EntityHdl, std::set<EntityHdl>> entityHierarchy;
 		};
 
 

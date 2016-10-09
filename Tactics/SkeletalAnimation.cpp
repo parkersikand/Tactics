@@ -96,7 +96,7 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 			// bone transform at second frame
 			++it;
 			auto t2 = it->second.bones[bone.boneName];
-			bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, p);
+			//bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, p);
 			bone.translation = linearInterpolateMatrices(t1.translation, t2.translation, p);
 			bone.scale = linearInterpolateMatrices(t1.scale, t2.scale, p);
 		} // for each bone
@@ -104,14 +104,14 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 	}
 	else if (offset < 0.001) { // zero, first keyframe
 		for (auto & bone : sa->bones) {
-			bone.rotation = anim.keyFrames.begin()->second.bones[bone.boneName].rotation;
+			//bone.rotation = anim.keyFrames.begin()->second.bones[bone.boneName].rotation;
 			bone.translation = anim.keyFrames.begin()->second.bones[bone.boneName].translation;
 			bone.scale = anim.keyFrames.begin()->second.bones[bone.boneName].scale;
 		}
 	}
 	else { // end of animation, last keyframe
 		for (auto & bone : sa->bones) {
-			bone.rotation = anim.keyFrames.rbegin()->second.bones[bone.boneName].rotation;
+			//bone.rotation = anim.keyFrames.rbegin()->second.bones[bone.boneName].rotation;
 			bone.translation = anim.keyFrames.rbegin()->second.bones[bone.boneName].translation;
 			bone.scale = anim.keyFrames.rbegin()->second.bones[bone.boneName].scale;
 		}

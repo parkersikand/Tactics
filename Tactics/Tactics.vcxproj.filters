@@ -180,6 +180,9 @@
     <ClCompile Include="SkeletalAnimation.cpp">
       <Filter>Source Files\Concepts</Filter>
     </ClCompile>
+    <ClCompile Include="GuideLines.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -309,6 +312,9 @@
     </ClInclude>
     <ClInclude Include="AnimatedCubeWorld.h">
       <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="GuideLines.h">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

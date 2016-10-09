@@ -6,6 +6,28 @@
 using namespace Tactics::ECS;
 
 
+Entity::Entity(World & w) : world(&w) {
+	hdl = world->newEntity();
+}
+
+
+EntityHdl Entity::newChild() {
+	EntityHdl child = world->newEntity();
+	world->setParentChild(hdl, child);
+	return child;
+}
+
+
+void Entity::destroy() {
+	world->removeEntity(hdl);
+	world = NULL;
+	hdl = 0;
+	mask = NULL;
+	delete this;
+}
+
+// World
+
 // kill all humans
 World::~World() {
 	for (unsigned int c = 0; c < ComponentManager::getSize(); c++) {
@@ -61,6 +83,34 @@ EntityHdl World::addEntity(Entity & entity) {
 }
 
 
+void World::removeEntity(EntityHdl hdl) {
+	// remove children
+	for (auto child : entityHierarchy[hdl]) {
+		removeEntity(child);
+	}
+
+	// delete components
+	for (unsigned int i = 0; i < ECS_MAX_COMPONENTS; i++) {
+		auto * component = container[i][hdl];
+		if (component != nullptr) delete component;
+	}
+	current_size -= 1;
+}
+
+
+void World::setParentChild(EntityHdl parent, EntityHdl child) {
+	entityHierarchy[parent].insert(child);
+}
+
+
+EntityHdl World::createChildEntity(EntityHdl parent) {
+	EntityHdl child = newEntity();
+	setParentChild(parent, child);
+	return child;
+}
+
+
+//  RunnableWorld
 void RunnableWorld::addRunnableSystem(RunnableSystem & rs) {
 	registerSystem(rs);
 	systems.push_back(&rs);
