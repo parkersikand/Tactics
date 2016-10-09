@@ -28,7 +28,7 @@ GLuint ShaderProgramHelper::LoadShaders(const char * vertex_file_path, const cha
 	}
 	else {
 		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
-		getchar();
+		char wait = getchar();
 		return 0;
 	}
 

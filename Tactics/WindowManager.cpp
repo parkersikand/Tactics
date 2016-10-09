@@ -37,7 +37,7 @@ GLFWwindow * WindowManager::initWindow(std::string title, int width, int height)
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL) {
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
-		getchar();
+		char wait = getchar();
 		glfwTerminate();
 	}
 	glfwMakeContextCurrent(window);
@@ -48,7 +48,7 @@ GLFWwindow * WindowManager::initWindow(std::string title, int width, int height)
 		fprintf(stderr, "Failed to initialize GLEW\n");
 		// Problem: glewInit failed, something is seriously wrong.
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-		getchar();
+		char wait = getchar();
 		glfwTerminate();
 	}
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);

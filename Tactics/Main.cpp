@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	// initialize OpenGL
 	if (!glfwInit()) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
-		getchar();
+		char wait = getchar();
 		return -1;
 	}
 

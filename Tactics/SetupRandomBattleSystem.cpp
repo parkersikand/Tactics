@@ -45,7 +45,7 @@ void SetupRandomBattleSystem::run(World & world) {
 	}
 
 	for (int i = 0; i < h; i++) delete hw[i];
-	delete hw;
+	delete[] hw;
 
 }
 
