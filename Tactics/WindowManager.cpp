@@ -15,9 +15,6 @@ void WindowManager::onRegister(ECS::RunnableWorld & world) {
 	Systems::DrawEventShooter * des = new Systems::DrawEventShooter;
 	world.addRunnableGlobalSystem(*des);
 
-	//auto * des = new ECS::ThreadedSystemAdapter<Systems::DrawEventShooter>;
-	//world.addRunnableGlobalSystem(*des);
-
 	Systems::DrawLoop * drawLoop = new Systems::DrawLoop(myWindow);
 	world.addGlobalSystem(*drawLoop);
 

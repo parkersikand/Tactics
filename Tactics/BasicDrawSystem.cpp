@@ -297,13 +297,9 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 				glUniformMatrix4fv(boneMatU, 1, GL_FALSE, &sa->bones[i].boneSpace[0][0]);
 				
 				auto boneTransformU = glGetUniformLocation(programId, ("bone_transforms[" + std::to_string(i) + "]").c_str());
-				auto bt = sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale /* * sa->armatureRotation */;
-				bt = sa->armatureRotation * sa->bones[i].translation;
-				bt = glm::rotate(glm::mat4(1.f), 90.f, glm::vec3(1, 0, 0)) * sa->bones[i].translation;
-				bt = glm::mat4(1.f);
-				//bt = glm::rotate(glm::mat4(), 90.f, glm::vec3(0,0,1.f)) * glm::translate(glm::mat4(), glm::vec3(5.f, 0.f, 0.f));
-				bt = glm::translate(glm::mat4(), glm::vec3(0.f, 5.f, 0.f));
-				// TODO figure out why translating and rotating 90 degrees about an axis does not work as expected
+				//auto bt = glm::rotate(glm::mat4(), glm::radians(-90.f), glm::vec3(1,0,0)) * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
+				auto bt = sa->bones[i].boneSpace * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale /* * sa->bones[i].boneSpace*/;
+				//bt = sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
 				glUniformMatrix4fv(boneTransformU, 1, GL_FALSE, &bt[0][0]);
 			}
 

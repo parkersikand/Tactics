@@ -45,6 +45,7 @@ namespace Tactics {
 			virtual void handle(const EventType &) = 0;
 		};
 
+
 		// global event dispatcher
 		// holds listeners
 		class EventDispatcher {
@@ -80,6 +81,8 @@ namespace Tactics {
 				// TODO re broadcast event as parent type
 			}
 
+			void removeEventHandler(BaseEventHandler & hdl);
+
 		private:
 			static EventDispatcher * instance;
 			static unsigned int eventIndex;
@@ -87,6 +90,25 @@ namespace Tactics {
 			std::vector<BaseEventHandler *> eventHandlers[ECS_MAX_EVENT_TYPES];
 		}; // class EventDispatcher
 
+
+		   // Special event handler that auto registers and destroys itself
+		template <typename EventType>
+		struct AutoEventHandler : public virtual EventHandler<EventType> {
+			AutoEventHandler() {
+				EventDispatcher::getInstance()->registerEventHandler<EventType>(*this);
+			}
+			~AutoEventHandler() {
+				EventDispatcher::getInstance()->removeEventHandler(*this);
+			}
+		};
+
+
+		// System level events
+		namespace Events {
+			struct EntityDestroyedEvent : public Event {
+				EntityHdl handle;
+			};
+		}
 
 	} // namespace ECS
 

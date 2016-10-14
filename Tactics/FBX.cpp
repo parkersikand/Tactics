@@ -101,6 +101,7 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 	} // while
 
 	// assemble vertex info, triangulate faces
+	std::vector<unsigned int> order;
 	vx.clear();
 	unsigned int i = 0;
 	while (i < vertexIndices.size()) {
@@ -111,6 +112,9 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 			idx.push_back(vertexIndices[i]);
 			idx.push_back(vertexIndices[i + 1]);
 			idx.push_back(-1 - vertexIndices[i + 2]);
+			order.push_back(i);
+			order.push_back(i+1);
+			order.push_back(i+2);
 			i += 3;
 		}
 		else if (i + 3 < vertexIndices.size() && vertexIndices[i + 3] < 0) { // quad
@@ -126,6 +130,12 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 			idx.push_back(vertexIndices[i]);
 			idx.push_back(vertexIndices[i + 2]);
 			idx.push_back(-1 - vertexIndices[i + 3]);
+			order.push_back(i);
+			order.push_back(i + 1);
+			order.push_back(i + 2);
+			order.push_back(i);
+			order.push_back(i + 2);
+			order.push_back(i + 3);
 			i += 4;
 		}
 		else { // n-gon
@@ -137,6 +147,9 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 				idx.push_back(vertexIndices[start]);
 				idx.push_back(vertexIndices[i + 1]);
 				idx.push_back(-1 - vertexIndices[i + 2]);
+				order.push_back(start);
+				order.push_back(i + 1);
+				order.push_back(i + 2);
 				i++;
 			}
 			vx.push_back(inVertices[vertexIndices[start]]);
@@ -145,6 +158,9 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 			idx.push_back(vertexIndices[start]);
 			idx.push_back(vertexIndices[i + 1]);
 			idx.push_back(-1 - vertexIndices[i + 2]);
+			order.push_back(start);
+			order.push_back(i + 1);
+			order.push_back(i + 2);
 		} // n-gon
 
 	} // while
@@ -152,20 +168,27 @@ void readMeshData(istream & in, vector<glm::vec3> & vx, vector<glm::vec2> & uv, 
 	// normal info
 	norm.clear();
 	norm.resize(vx.size());
+	std::vector<glm::vec3> tmpNorm;
 	for (unsigned int i = 0, n = 0; i < inNormalData.size(); i += 3, n++) {
-		norm[n] = glm::vec3(inNormalData[i], inNormalData[i+1], inNormalData[i+2]);
+	//	norm[n] = glm::vec3(inNormalData[i], inNormalData[i+1], inNormalData[i+2]);
+		tmpNorm.push_back(glm::vec3(inNormalData[i], inNormalData[i + 1], inNormalData[i + 2]));
+	}
+	for (unsigned int i = 0; i < order.size(); i++) {
+		norm[i] = tmpNorm[order[i]];
 	}
 
 	// uv info
+	// convert list of floats into vector of points, ordered by vertex id
 	vector<glm::vec2> tmpUV;
 	tmpUV.resize(inUVidx.size());
 	for (unsigned int i = 0; i < inUVData.size(); i += 2) {
 		tmpUV[i / 2] = glm::vec2(inUVData[i], inUVData[i + 1]);
 	}
+ 
 	uv.clear();
-	uv.resize(inUVidx.size());
-	for (unsigned int i = 0; i < inUVidx.size(); i++) {
-		uv[i] = tmpUV[inUVidx[i]];
+	uv.resize(idx.size());
+	for (unsigned int i = 0; i < idx.size(); i++) {
+		uv[i] = tmpUV[inUVidx[order[i]]];
 	}
 
 	std::cout << "Read " << vx.size() << " vertices" << std::endl;
@@ -227,7 +250,7 @@ glm::mat4 vec2mat(vector<float> & v) {
 
 
 // parse Deformer node
-void ParseDeformerNode(istream & in, string & meshName, string & boneName, map<int, float> & index_weights, glm::mat4 & transform, glm::mat4 transformLink) {
+void ParseDeformerNode(istream & in, string & meshName, string & boneName, map<int, float> & index_weights, glm::mat4 & transform, glm::mat4 & transformLink) {
 	smatch names;
 	string line;
 	getline(in, line);
@@ -346,7 +369,7 @@ void ParseKeyframes(istream & in, vector<KF> & keyframes) {
 		keyframes[kf].frame = kf;
 		for (auto const & name_trans : boneTransforms) {
 			auto r = name_trans.second.r[kf];
-			keyframes[kf].bones[name_trans.first].rotation = glm::rotate(glm::mat4(), r.x, glm::vec3(1, 0, 0)) * glm::rotate(glm::mat4(), r.y, glm::vec3(0, 1, 0)) * glm::rotate(glm::mat4(), r.z, glm::vec3(0, 0, 1));
+			keyframes[kf].bones[name_trans.first].rotation = glm::rotate(glm::mat4(), glm::radians(r.x), glm::vec3(1, 0, 0)) * glm::rotate(glm::mat4(), glm::radians(r.y), glm::vec3(0, 1, 0)) * glm::rotate(glm::mat4(), glm::radians(r.z), glm::vec3(0, 0, 1));
 			keyframes[kf].bones[name_trans.first].scale = glm::scale(glm::mat4(), name_trans.second.s[kf]);
 			keyframes[kf].bones[name_trans.first].translation = glm::translate(glm::mat4(), name_trans.second.t[kf]);
 		}
@@ -354,8 +377,7 @@ void ParseKeyframes(istream & in, vector<KF> & keyframes) {
 
 } // ParseKeyFrames
 
-Bone ParseBoneNode(istream & in) {
-	Bone bone;
+void ParseBoneNode(istream & in, Bone & bone) {
 	string buf;
 	auto pos = in.tellg();
 	while (in >> buf && buf != "Properties60:") pos = in.tellg();
@@ -376,11 +398,10 @@ Bone ParseBoneNode(istream & in) {
 	regex_match(p60["Lcl Rotation"].second, vecMatch, regex(".*(-?\\d+.\\d+),(-?\\d+.\\d+),(-?\\d+.\\d+)"));
 	assert(vecMatch.size() == 4);
 	bone.rotation =
-		glm::rotate(glm::mat4(), stof(vecMatch[1]), glm::vec3(1, 0, 0))
-		* glm::rotate(glm::mat4(), stof(vecMatch[2]), glm::vec3(0, 1, 0))
-		* glm::rotate(glm::mat4(), stof(vecMatch[3]), glm::vec3(0, 0, 1));
+		glm::rotate(glm::mat4(), glm::radians(stof(vecMatch[1])), glm::vec3(1, 0, 0))
+		* glm::rotate(glm::mat4(), glm::radians(stof(vecMatch[2])), glm::vec3(0, 1, 0))
+		* glm::rotate(glm::mat4(), glm::radians(stof(vecMatch[3])), glm::vec3(0, 0, 1));
 	while (in >> buf && buf != "}");
-	return bone;
 }
 
 bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::Components::SkeletalAnimation * sa, Tactics::Components::CObject3D * o3d, const char * meshname) {
@@ -407,6 +428,8 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 				glm::mat4 transform, transformLink;
 				ParseDeformerNode(in, meshName, boneName, index_weights, transform, transformLink);
 				bone_weights[boneName] = index_weights;
+				//name_bones[boneName].boneSpace = transform; // down, CCW
+				name_bones[boneName].boneSpace = transformLink; // down, CCW
 			}
 		}
 		else if (buf == "Connections:") {
@@ -433,7 +456,8 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 				regex_match(name, boneNameMatch, regex("Model::(\\w+)"));
 				assert(boneNameMatch.size() == 2);
 				in.seekg(pos);
-				name_bones[boneNameMatch[1]] = ParseBoneNode(in);
+//				name_bones[boneNameMatch[1]] = ParseBoneNode(in);
+				ParseBoneNode(in, name_bones[boneNameMatch[1]]);
 			}
 		}
 		pos = in.tellg();

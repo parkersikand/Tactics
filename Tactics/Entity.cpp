@@ -95,6 +95,11 @@ void World::removeEntity(EntityHdl hdl) {
 		if (component != nullptr) delete component;
 	}
 	current_size -= 1;
+	
+	// fire entity destroyed event
+	ECS::Events::EntityDestroyedEvent ev;
+	ev.handle = hdl;
+	EventDispatcher::postEvent(ev);
 }
 
 

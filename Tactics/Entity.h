@@ -85,7 +85,9 @@ namespace Tactics {
 
 			template <typename T>
 			T * getComponent(EntityHdl hdl) {
-				return static_cast<T*>(container[ComponentManager::getComponentId<T>()][hdl]);
+				if(container[ComponentManager::getComponentId<T>()][hdl])
+					return static_cast<T*>(container[ComponentManager::getComponentId<T>()][hdl]);
+				return nullptr;
 			}
 
 			// add a new component onto a registered entity
@@ -99,7 +101,6 @@ namespace Tactics {
 				Component ** ptr = &container[ComponentManager::getComponentId<T>()][hdl];
 				if (*ptr) delete (*ptr);
 				*ptr = new T(t);
-				// TODO update mask
 				mask_arr[hdl].set(ComponentManager::getComponentId<T>());
 				return static_cast<T*>(*ptr);
 			}

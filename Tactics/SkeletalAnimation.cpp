@@ -64,12 +64,13 @@ glm::mat4 linearInterpolateMatrices(glm::mat4 a, glm::mat4 b, double percent) {
 	return out;
 }
 
-// TODO quaternion interpolation
+
 glm::mat4 InterpolateRotationMatrices(glm::mat4 a, glm::mat4 b, double factor) {
 	glm::quat qa = glm::quat_cast(a);
 	glm::quat qb = glm::quat_cast(b);
 	return glm::mat4_cast(glm::slerp(qa, qb, (float)factor));
 }
+
 
 void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Components::SkeletalAnimation * sa, double offset) {
 	auto anim = sa->animations[sa->currentAnimation];
@@ -96,7 +97,7 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 			// bone transform at second frame
 			++it;
 			auto t2 = it->second.bones[bone.boneName];
-			//bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, p);
+		    bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, p);
 			bone.translation = linearInterpolateMatrices(t1.translation, t2.translation, p);
 			bone.scale = linearInterpolateMatrices(t1.scale, t2.scale, p);
 		} // for each bone
@@ -104,14 +105,14 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 	}
 	else if (offset < 0.001) { // zero, first keyframe
 		for (auto & bone : sa->bones) {
-			//bone.rotation = anim.keyFrames.begin()->second.bones[bone.boneName].rotation;
+			bone.rotation = anim.keyFrames.begin()->second.bones[bone.boneName].rotation;
 			bone.translation = anim.keyFrames.begin()->second.bones[bone.boneName].translation;
 			bone.scale = anim.keyFrames.begin()->second.bones[bone.boneName].scale;
 		}
 	}
 	else { // end of animation, last keyframe
 		for (auto & bone : sa->bones) {
-			//bone.rotation = anim.keyFrames.rbegin()->second.bones[bone.boneName].rotation;
+			bone.rotation = anim.keyFrames.rbegin()->second.bones[bone.boneName].rotation;
 			bone.translation = anim.keyFrames.rbegin()->second.bones[bone.boneName].translation;
 			bone.scale = anim.keyFrames.rbegin()->second.bones[bone.boneName].scale;
 		}

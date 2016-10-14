@@ -82,6 +82,12 @@
     <Filter Include="Header Files\Worlds">
       <UniqueIdentifier>{9486d421-d6ed-4be0-869e-7277a9753bbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\ray">
+      <UniqueIdentifier>{2886c29e-ece7-4ff4-baf1-b91cd784ba0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tests\concepts">
+      <UniqueIdentifier>{c6a23dbd-1ed3-4825-b234-9a5b57b2b270}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -183,6 +189,12 @@
     <ClCompile Include="GuideLines.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="LineCollision.cpp">
+      <Filter>Source Files\Concepts</Filter>
+    </ClCompile>
+    <ClCompile Include="LineCollisionDetector.cpp">
+      <Filter>Source Files\Tests\concepts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -196,6 +208,12 @@
     </None>
     <None Include="shaders\toon1\vertex.glsl">
       <Filter>Resource Files\shaders\toon1</Filter>
+    </None>
+    <None Include="shaders\ray\fragment.glsl">
+      <Filter>Resource Files\shaders\ray</Filter>
+    </None>
+    <None Include="shaders\ray\vertex.glsl">
+      <Filter>Resource Files\shaders\ray</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -315,6 +333,9 @@
     </ClInclude>
     <ClInclude Include="GuideLines.h">
       <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="LineCollision.h">
+      <Filter>Header Files\Concepts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

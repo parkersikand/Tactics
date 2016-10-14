@@ -13,9 +13,10 @@ using namespace Tactics;
 using namespace Tactics::ECS;
 
 // a simple key handler to move the camera
-struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, public virtual Tactics::ECS::EventHandler<Tactics::Events::ScrollEvent> {
+struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, 
+	public virtual Tactics::ECS::EventHandler<Tactics::Events::ScrollEvent> {
 
-	void handle(const Events::ScrollEvent & se) {
+	void handle(const Tactics::Events::ScrollEvent & se) {
 		//std::cout << "Scroll" << std::endl;
 		World & world = *getWorld();
 		auto * pos = world.getComponent<Components::Position3D<> >(camera);
@@ -33,15 +34,15 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, public virtua
 		pos->z = newPosition.z;
 
 		// update the camera system
-		Events::CameraChangedEvent cce;
+		Tactics::Events::CameraChangedEvent cce;
 		cce.newCamera = camera;
 		ECS::EventDispatcher::postEvent(cce);
 	}
 
-	void handle(const Events::KeyRepeat & kre) {
+	void handle(const Tactics::Events::KeyRepeat & kre) {
 		update(kre.keyCode);
 	}
-	void handle(const Events::KeyDown & kde) {
+	void handle(const Tactics::Events::KeyDown & kde) {
 		update(kde.keyCode);
 	}
 
@@ -88,7 +89,7 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, public virtua
 		//		std::cout << "X: " << pos->x << " Z: " << pos->z << std::endl;
 
 		// update the camera system
-		Events::CameraChangedEvent cce;
+		Tactics::Events::CameraChangedEvent cce;
 		cce.newCamera = camera;
 		ECS::EventDispatcher::postEvent(cce);
 	}
@@ -100,11 +101,10 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, public virtua
 
 void Tactics::Worlds::BasicWorld::setup() {
 	// add systems
-//	WindowManager windowManager;
+
 	auto * windowManager = createManagedSystem<WindowManager>();
 	addRunnableGlobalSystem(*windowManager);
 
-//	Systems::BasicDrawSystem basicDraw;
 	auto * basicDraw = createManagedSystem<Systems::BasicDrawSystem>();
 	addSystem(*basicDraw);
 	
