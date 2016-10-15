@@ -43,6 +43,31 @@ void LineCollision::Systems::LineCollisionDetector::run(ECS::World & world) {
 	}
 }
 
+/*
+// fire ray from source and hit all targets
+void LineCollision::Systems::LineCollisionDetector::fireRay(
+	ECS::EntityHdl source
+	) 
+{
+	auto * pos = getWorld()->getComponent<Tactics::Components::Position3D<>>(source);
+	auto * ray = getWorld()->getComponent<LineCollision::Components::LineCollisionRay>(source);
+	
+	auto mask = (ECS::MaskBuilder()).set<Components::LineCollisionTarget>().mask();
+
+	int hits = ray->numHits;
+
+	// for each target, perform detection
+	// TODO order by depth
+	for (auto targetHdl : getWorld()->filterMaskIncludes(mask)) {
+		if (hits == 0) break;
+
+		if (fireRay(pos, ray, targetHdl)) {
+			hits--;
+		}
+	}
+
+}
+*/
 
 void LineCollision::Systems::LineCollisionDetector::fireRay(
 	const ::Components::Position3D<> & pos,
@@ -53,17 +78,13 @@ void LineCollision::Systems::LineCollisionDetector::fireRay(
 	
 	// for each target, perform detection
 	for (auto targetHdl : getWorld()->filterMaskIncludes(mask)) {
-		if (ray.numHits == 0) continue;
+		if (ray.numHits == 0) break;
 
 		if (fireRay(pos, ray, targetHdl)) {
 			ray.numHits--;
 		}
 	}
 } // fireRay
-
-
-//glm::vec4 unsignedInt2vec4(unsigned int i) {
-//}
 
 
 // Issue draw calls for line collision
@@ -123,7 +144,7 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 		o3dPtr = getWorld()->getComponent<Tactics::Components::CObject3D>(hdl);
 
 		// check for SkeletalAnimation
-		/*
+		
 		auto * sa = getWorld()->getComponent<Tactics::Components::SkeletalAnimation>(hdl);
 		if (sa != nullptr) {
 
@@ -168,7 +189,7 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 			glEnableVertexAttribArray(11);
 			glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(Tactics::Components::SkeletalAnimation::VertexBoneInfo), (void *)16);
 		}
-		*/
+		
 
 		// load vertex data
 		glEnableVertexAttribArray(0);
