@@ -189,6 +189,7 @@ namespace Tactics {
 			SystemType * createManagedSystem() {
 				auto * ptr = new SystemType();
 				managedSystems.push_back(ptr);
+				registerSystem(*ptr);
 				return ptr;
 			}
 
@@ -200,6 +201,9 @@ namespace Tactics {
 
 			// set parent-child relationship
 			void setParentChild(EntityHdl parent, EntityHdl child);
+
+			// virtual methods
+			virtual void setup() {};
 
 		private:
 			unsigned int starting_size = 1024; // allocate space for 1024 entities

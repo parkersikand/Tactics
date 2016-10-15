@@ -21,10 +21,11 @@ public:
 		// ray source
 		sourceHdl = newEntity();
 		auto * pos = addComponent<Components::Position3D<>>(sourceHdl);
-		pos->y = 0.5;
+		pos->y = 10.f;
+		pos->x = 10.f;
 		addComponent<LineCollision::Components::LineCollisionSource>(sourceHdl);
 		auto * ray = addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
-		ray->direction = glm::vec3(1.f, 0.f, 0.f);
+		ray->direction = glm::vec3(-10.f, -10.f, 0.f);
 		addComponent<Components::ModelTransform>(sourceHdl);
 
 		// cube
@@ -40,6 +41,7 @@ public:
 		auto * cube2_3d = addComponent<Components::CObject3D>(cube2Hdl);
 		make_cube(cube2_3d);
 		auto * cube2_Pos = addComponent<Components::Position3D<>>(cube2Hdl);
+		cube2_Pos->z = 2.f;
 		addComponent<LineCollision::Components::LineCollisionTarget>(cube2Hdl);
 		addComponent<Components::ModelTransform>(cube2Hdl);
 	}
@@ -61,7 +63,22 @@ public:
 		auto * ray = getComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		return lcd.fireRay(*pos, *ray, cube2Hdl);
 	}
-};
+
+	bool testBlock() {
+		EntityHdl source2 = newEntity();
+		auto * pos = addComponent<Components::Position3D<>>(source2);
+		pos->y = 3.f;
+		pos->z = -10.f;
+		addComponent<LineCollision::Components::LineCollisionSource>(source2);
+		auto * ray = addComponent<LineCollision::Components::LineCollisionRay>(source2);
+		ray->direction = glm::vec3(0.f, -3.f, 10.f);
+		addComponent<Components::ModelTransform>(source2);
+
+		auto lcd = *createManagedSystem<LineCollision::Systems::LineCollisionDetector>();
+		return lcd.fireRay(*pos, *ray, cube2Hdl);
+	}
+
+}; // class SimpleCollision1World
 
 TEST(LineCollision, simple_line_collision_hit) {
 	SimpleLineCollision1World world;
@@ -69,10 +86,16 @@ TEST(LineCollision, simple_line_collision_hit) {
 	ASSERT_TRUE(world.testHit());
 }
 
-TEST(LineCollisoin, simple_line_collision_miss) {
+TEST(LineCollision, simple_line_collision_miss) {
 	SimpleLineCollision1World world;
 	world.setup();
 	ASSERT_FALSE(world.testMiss());
+}
+
+TEST(LineCollision, line_collision_block) {
+	SimpleLineCollision1World world;
+	world.setup();
+	ASSERT_FALSE(world.testBlock());
 }
 
 #endif

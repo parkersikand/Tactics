@@ -123,9 +123,6 @@
     <ClCompile Include="SetupRandomBattleSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Util.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Object3D.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
@@ -194,6 +191,9 @@
     </ClCompile>
     <ClCompile Include="LineCollisionDetector.cpp">
       <Filter>Source Files\Tests\concepts</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -336,6 +336,9 @@
     </ClInclude>
     <ClInclude Include="LineCollision.h">
       <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

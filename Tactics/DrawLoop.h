@@ -30,7 +30,7 @@ namespace Tactics {
 		class DrawLoop : public virtual EventedSystem<DrawEvent> {
 		public:
 
-			DrawLoop(GLFWwindow * wind) : myWindow(wind) {};
+			DrawLoop(GLFWwindow * wind);
 
 			void handle(const DrawEvent &);
 
@@ -41,6 +41,8 @@ namespace Tactics {
 		private:
 			// the window that this system will draw to
 			GLFWwindow * myWindow;
+
+			unsigned int width, height;
 
 			std::vector<Systems::BaseAbstractDrawSystem *> systems;
 

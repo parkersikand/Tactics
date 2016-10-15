@@ -70,7 +70,7 @@ namespace Tactics {
 				// Grain of buffers
 				unsigned int bufferAccuracy = 1000;
 				
-				void LineCollisionDraw(const ::Components::Position3D<> & pos,
+				void LineCollisionDraw(const Tactics::Components::Position3D<> & pos,
 					Components::LineCollisionRay ray,
 					ECS::EntityHdl targetHdl);
 

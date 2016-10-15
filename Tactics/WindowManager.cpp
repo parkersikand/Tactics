@@ -10,6 +10,12 @@
 
 using namespace Tactics;
 
+
+WindowManager::~WindowManager() {
+	glfwDestroyWindow(myWindow);
+}
+
+
 void WindowManager::onRegister(ECS::RunnableWorld & world) {
 	// add top level drawing
 	Systems::DrawEventShooter * des = new Systems::DrawEventShooter;
@@ -21,6 +27,7 @@ void WindowManager::onRegister(ECS::RunnableWorld & world) {
 	CameraSystem * cameraSystem = new CameraSystem;
 	world.addGlobalSystem(*cameraSystem);
 }
+
 
 GLFWwindow * WindowManager::initWindow(std::string title, int width, int height) {
 	GLFWwindow * window;
@@ -48,7 +55,7 @@ GLFWwindow * WindowManager::initWindow(std::string title, int width, int height)
 		char wait = getchar();
 		glfwTerminate();
 	}
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // 0 0 102 0
 
 	// enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -67,7 +74,7 @@ GLFWwindow * WindowManager::initWindow(std::string title, int width, int height)
 	glBindVertexArray(vao);
 	
 	return window;
-}
+} // WindowManager::initWindow
 
 
 void WindowManager::run(ECS::RunnableWorld & world) {

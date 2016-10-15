@@ -34,6 +34,8 @@ namespace Tactics {
 	class WindowManager : public ECS::RunnableSystem {
 	public:
 
+		~WindowManager();
+
 		WindowManager() {
 			myWindow = WindowManager::initWindow();
 		};
@@ -45,7 +47,7 @@ namespace Tactics {
 		}
 		WindowManager(GLFWwindow * w) : myWindow(w) {};
 
-		static GLFWwindow * initWindow(std::string = "ECS::Window v0.0dev", int w = 1072, int h = 768);
+		static GLFWwindow * initWindow(std::string = "ECS::Window v0.0dev", int w = 1024, int h = 768);
 
 		// check window events, handle closing window, etc
 		virtual void run(ECS::RunnableWorld &);

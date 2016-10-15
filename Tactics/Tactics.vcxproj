@@ -246,6 +246,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraSystem.h" />
     <ClInclude Include="ClockSystem.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DrawLoop.h" />

@@ -5,6 +5,8 @@
 
 #include "Entity.h"
 
+#include "WindowManager.h"
+
 namespace Tactics {
 
 	namespace Worlds {
@@ -12,8 +14,13 @@ namespace Tactics {
 		// simple world with WindowManager and DrawSystem
 		class BasicWorld : public virtual Tactics::ECS::RunnableWorld {
 		public:
-			void setup();
+			virtual void setup();
+			// get the window
+			GLFWwindow * getWindow();
+		protected:
+			
 		private:
+			WindowManager * windowManager;
 		};
 
 	}

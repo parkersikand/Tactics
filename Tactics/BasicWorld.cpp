@@ -102,7 +102,7 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem,
 void Tactics::Worlds::BasicWorld::setup() {
 	// add systems
 
-	auto * windowManager = createManagedSystem<WindowManager>();
+	windowManager = createManagedSystem<WindowManager>();
 	addRunnableGlobalSystem(*windowManager);
 
 	auto * basicDraw = createManagedSystem<Systems::BasicDrawSystem>();
@@ -132,4 +132,9 @@ void Tactics::Worlds::BasicWorld::setup() {
 	ECS::EventDispatcher::registerEventHandler<Events::ScrollEvent>(ckh);
 	registerSystem(ckh);
 
+}
+
+
+GLFWwindow * Tactics::Worlds::BasicWorld::getWindow() {
+	return windowManager->getWindow();
 }
