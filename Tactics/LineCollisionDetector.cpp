@@ -6,6 +6,7 @@
 
 #include "BasicWorld.h"
 #include "Util.h"
+#include "common.h"
 
 using namespace Tactics;
 using namespace Tactics::ECS;
@@ -85,6 +86,7 @@ public:
 		auto * pos = getComponent<Components::Position3D<>>(sourceHdl);
 		auto * ray = getComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		auto lcd = *createManagedSystem<LineCollision::Systems::LineCollisionDetector>();
+		glClearErrors();
 		auto result = lcd.castResult(source2, cube2Hdl);
 		return result.color.y == 1.f;
 	}

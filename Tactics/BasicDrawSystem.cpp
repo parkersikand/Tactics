@@ -4,6 +4,7 @@
 #include "Program.h"
 #include "CameraSystem.h"
 #include "SkeletalAnimation.h"
+#include "common.h"
 
 #include <algorithm>
 
@@ -137,6 +138,7 @@ void Systems::BasicDrawSystem::makeBatches() {
 
 void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 	glUseProgram(programId);
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	// set global uniforms
 	glUniform1ui(isSkeletalU, 0);
 
@@ -212,6 +214,7 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 // draw unbatched objects
 void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 	glUseProgram(programId);
+	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 
 	// set camera info
 	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
@@ -332,5 +335,7 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(3);
 	}
+
+	glClearErrors();
 
 }  //  void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities)

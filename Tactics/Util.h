@@ -23,5 +23,10 @@ void make_cube(Tactics::Components::CObject3D *);
 // read a quoted string from an input stream
 std::string & quotedString(std::istream &, std::string &);
 
+// compute angle between line and plane
+float linePlaneAngleRad(glm::vec3 line, glm::vec3 plane);
+
+// compute angle between line and normal of plane
+float lineNormalAngleRad(glm::vec3 line, glm::vec3 normal);
 
 #endif

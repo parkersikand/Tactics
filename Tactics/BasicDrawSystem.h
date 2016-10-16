@@ -27,6 +27,9 @@ namespace Tactics {
 			// update batched VBOs. This is slow, so don't call this very often
 			void makeBatches();
 
+			void setClearColor(glm::vec4 col) { clearColor = col; }
+			glm::vec4 getClearColor() { return clearColor; }
+
 		private:
 
 			// a batch of objects for the basic draw system
@@ -64,6 +67,9 @@ namespace Tactics {
 
 			// batched VBOS
 			GLuint vxVBO, uvVBO, normVBO, colorVBO;
+
+			// clear color
+			glm::vec4 clearColor = glm::vec4(0.f, 0.f, 0.4f, 0.f);
 
 			// ordered handles
 			std::vector<ECS::EntityHdl> orderedBatchHandles;

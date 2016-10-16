@@ -198,6 +198,9 @@
     <ClCompile Include="WalkOnSurface.cpp">
       <Filter>Source Files\Worlds</Filter>
     </ClCompile>
+    <ClCompile Include="WalkOnSurfaceTest.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">

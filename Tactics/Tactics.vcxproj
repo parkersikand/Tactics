@@ -228,6 +228,7 @@
     <ClCompile Include="ThreadedWorld.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="WalkOnSurface.cpp" />
+    <ClCompile Include="WalkOnSurfaceTest.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>

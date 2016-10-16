@@ -55,7 +55,7 @@ GLFWwindow * WindowManager::initWindow(std::string title, int width, int height)
 		char wait = getchar();
 		glfwTerminate();
 	}
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // 0 0 102 0
+	//glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // 0 0 102 0
 
 	// enable depth test
 	glEnable(GL_DEPTH_TEST);

@@ -14,6 +14,14 @@ namespace Tactics {
 
 		struct WalkOnSurfaceWorld : public Tactics::Worlds::BasicWorld {
 			virtual void setup();
+
+			bool testStep1();
+
+			struct PlayerController;
+		protected:
+			
+			PlayerController * playerController;
+
 		};
 
 	}

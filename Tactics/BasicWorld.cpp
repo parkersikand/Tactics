@@ -6,8 +6,8 @@
 #include "CameraSystem.h"
 #include "WindowManager.h"
 #include "BasicDrawSystem.h"
+#include "common.h"
 
-#define PI 3.1415926535
 
 using namespace Tactics;
 using namespace Tactics::ECS;

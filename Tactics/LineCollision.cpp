@@ -358,7 +358,8 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	
 	glUseProgram(programId);
 
-	glClearErrors();
+	//glClearErrors();
+	//while (glGetError() != GL_NO_ERROR);
 
 	GLuint fbo;
 	glGenFramebuffers(1, &fbo);
@@ -372,6 +373,10 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	}
 	else if (err == GL_INVALID_OPERATION) {
 		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
+		assert(false);
+	}
+	else {
+		std::cout << "OpenGL error" << std::endl;
 		assert(false);
 	}
 	glClearErrors();
