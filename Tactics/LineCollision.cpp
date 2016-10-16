@@ -103,8 +103,9 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 	glm::mat4 vm = glm::lookAt(posv, posv + ray.direction, glm::vec3(0.f, 1.f, 0.f));
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 
-//	glm::mat4 pm = glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.01f, 1000.f);
-	glm::mat4 pm = glm::perspective(glm::radians(45.0f), 1.f, 0.01f, 1000.f);
+    // get z-values from camera system
+	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
+	glm::mat4 pm = glm::perspective(glm::radians(45.0f), 1.f, cameraSystem->getZNear(), cameraSystem->getZFar());
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 
 	auto isSkeletalU = glGetUniformLocation(programId, "isSkeletal");
