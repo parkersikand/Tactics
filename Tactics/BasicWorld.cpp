@@ -96,7 +96,7 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem,
 
 	EntityHdl camera;
 	float mult = 0.1f;
-};
+}; // CameraKeyHandler
 
 
 void Tactics::Worlds::BasicWorld::setup() {
@@ -131,7 +131,6 @@ void Tactics::Worlds::BasicWorld::setup() {
 	ECS::EventDispatcher::registerEventHandler<Events::KeyRepeat>(ckh);
 	ECS::EventDispatcher::registerEventHandler<Events::ScrollEvent>(ckh);
 	registerSystem(ckh);
-
 }
 
 

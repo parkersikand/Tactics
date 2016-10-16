@@ -196,8 +196,14 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 		glBindBuffer(GL_ARRAY_BUFFER, o3dPtr->vxBufId);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
+		// load normal data
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, o3dPtr->normBufId);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
 		glDrawArrays(o3dPtr->drawMode, 0, o3dPtr->count);
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
 
 	} // for other objects
 }
@@ -334,12 +340,207 @@ bool LineCollision::Systems::LineCollisionDetector::fireRay(
 	
 } // fireRay
 
-/*
 
- * * * * *
- * * * * *
- * * * * *
- * * * * *
- * * * * *
- 
- */
+LineCollision::Systems::LineCollisionDetector::Result 
+LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source, ECS::EntityHdl target, int value, void * dataPtr) {
+	auto * pos = getWorld()->getComponent<Tactics::Components::Position3D<>>(source);
+	auto  *ray = getWorld()->getComponent<LineCollision::Components::LineCollisionRay>(source);
+	
+	glUseProgram(programId);
+
+	glClearErrors();
+
+	GLuint fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	// check for reading errors
+	auto err = glGetError();
+	if (err == GL_INVALID_ENUM) {
+		std::cout << "OpenGL error INVALID_ENUM" << std::endl;
+		assert(false);
+	}
+	else if (err == GL_INVALID_OPERATION) {
+		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
+		assert(false);
+	}
+	glClearErrors();
+
+	GLuint colorBuffer;
+	glGenRenderbuffers(1, &colorBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, bufferAccuracy, bufferAccuracy);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorBuffer);
+
+	// check for reading errors
+	err = glGetError();
+	if (err == GL_INVALID_ENUM) {
+		std::cout << "OpenGL error INVALID_ENUM" << std::endl;
+		assert(false);
+	}
+	else if (err == GL_INVALID_OPERATION) {
+		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
+		assert(false);
+	}
+	glClearErrors();
+
+	GLuint normalBuffer;
+	glGenRenderbuffers(1, &normalBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, normalBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, bufferAccuracy, bufferAccuracy);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_RENDERBUFFER, normalBuffer);
+
+	// check for reading errors
+	err = glGetError();
+	if (err == GL_INVALID_ENUM) {
+		std::cout << "OpenGL error INVALID_ENUM" << std::endl;
+		assert(false);
+	}
+	else if (err == GL_INVALID_OPERATION) {
+		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
+		assert(false);
+	}
+	glClearErrors();
+
+	GLuint depthBuffer;
+	glGenRenderbuffers(1, &depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, bufferAccuracy, bufferAccuracy);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+	// check for reading errors
+	err = glGetError();
+	if (err == GL_INVALID_ENUM) {
+		std::cout << "OpenGL error INVALID_ENUM" << std::endl;
+		assert(false);
+	}
+	else if (err == GL_INVALID_OPERATION) {
+		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
+		assert(false);
+	}
+	glClearErrors();
+
+	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, drawBuffers);
+
+#ifdef TESTING
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// draw to a window for debugging
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	LineCollisionDraw(*pos, *ray, target);
+	auto * world = getWorld();
+	auto * bworld = dynamic_cast<Tactics::Worlds::BasicWorld *>(world);
+	glfwSwapBuffers(bworld->getWindow());
+#endif
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, bufferAccuracy, bufferAccuracy);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearErrors();
+	LineCollisionDraw(*pos, *ray, target);
+
+	std::vector<std::uint8_t> centerPixelColor(4);
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &centerPixelColor[0]);
+
+#ifdef TESTING
+	std::vector<std::uint8_t> dbgColor(bufferAccuracy * bufferAccuracy * 4);
+	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGBA, GL_UNSIGNED_BYTE, &dbgColor[0]);
+	auto dbgColorPNGErr = lodepng::encode("LineCollider_ColorDebug.png", dbgColor, bufferAccuracy, bufferAccuracy);
+#endif
+
+	std::vector<std::uint8_t> centerPixelNormal(3);
+	glReadBuffer(GL_COLOR_ATTACHMENT1);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &centerPixelNormal[0]);
+
+#ifdef TESTING
+	std::vector<std::uint8_t> dbgNormal(bufferAccuracy * bufferAccuracy * 3);
+	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGB, GL_UNSIGNED_BYTE, &dbgNormal[0]);
+	std::vector<std::uint8_t> dbgNormalPng(bufferAccuracy * bufferAccuracy * 4);
+	for (unsigned int i = 0, j = 0; i < dbgNormal.size(); i+= 3, j += 4) {
+		dbgNormalPng[j] = dbgNormal[i];
+		dbgNormalPng[j + 1] = dbgNormal[i+1];
+		dbgNormalPng[j + 2] = dbgNormal[i+2];
+		dbgNormalPng[j + 3] = 255;
+	}
+	auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormalPng, bufferAccuracy, bufferAccuracy);
+#endif
+
+	std::vector<float> depth(1);
+	glReadBuffer(GL_DEPTH_ATTACHMENT);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &centerPixelColor[0]);
+
+#ifdef TESTING
+	std::vector<float> dbgDepth(bufferAccuracy * bufferAccuracy);
+	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_DEPTH_COMPONENT, GL_FLOAT, &dbgDepth[0]);
+	// format pixels
+	std::vector<std::uint8_t> dbgDepthPng(bufferAccuracy * bufferAccuracy * 4);
+	for (unsigned int i = 0; i < dbgDepth.size(); i++) {
+		dbgDepthPng[i * 4] = dbgDepth[i] * 255;
+		dbgDepthPng[i * 4 + 1] = dbgDepth[i] * 255;
+		dbgDepthPng[i * 4 + 2] = dbgDepth[i] * 255;
+		dbgDepthPng[i * 4 + 3] = 255;
+	}
+	auto dbgDepthPNGErr = lodepng::encode("LineCollider_DepthDebug.png", dbgDepthPng, bufferAccuracy, bufferAccuracy);
+#endif
+
+	switch (value) {
+	case 1:
+		*reinterpret_cast<std::vector<std::uint8_t>*>(dataPtr) = centerPixelColor;
+		break;
+	case 2:
+		*reinterpret_cast<std::vector<std::uint8_t>*>(dataPtr) = centerPixelNormal;
+		break;
+	case 3:
+		*reinterpret_cast<std::vector<float>*>(dataPtr) = depth;
+		break;
+	}
+
+	glDeleteRenderbuffers(1, &colorBuffer);
+	glDeleteRenderbuffers(1, &normalBuffer);
+	glDeleteRenderbuffers(1, &depthBuffer);
+	glDeleteFramebuffers(1, &fbo);
+
+	Result result;
+	
+	result.color.r = centerPixelColor[0] / 255;
+	result.color.g = centerPixelColor[1] / 255;
+	result.color.b = centerPixelColor[2] / 255;
+	result.color.a = centerPixelColor[3] / 255;
+
+	result.normal.x = centerPixelNormal[0] / 255;
+	result.normal.y = centerPixelNormal[1] / 255;
+	result.normal.z = centerPixelNormal[2] / 255;
+
+	result.depth = depth[0];
+
+	return result;
+} // genericCast
+
+
+glm::vec4 LineCollision::Systems::LineCollisionDetector::color(ECS::EntityHdl source, ECS::EntityHdl target) {
+	std::vector<std::uint8_t> data(4);
+	genericCast(source, target, 1, &data);
+	return glm::vec4(data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255);
+} // color()
+
+
+glm::vec3 LineCollision::Systems::LineCollisionDetector::normal(ECS::EntityHdl source, ECS::EntityHdl target) {
+	std::vector<std::uint8_t> data(4);
+	genericCast(source, target, 2, &data);
+	return glm::vec3(data[0] / 255, data[1] / 255, data[2] / 255);
+} // normal()
+
+
+float LineCollision::Systems::LineCollisionDetector::depth(ECS::EntityHdl source, ECS::EntityHdl target) {
+	std::vector<float> data;
+	genericCast(source, target, 3, &data);
+	return data[0];
+} // depth
+
+
+LineCollision::Systems::LineCollisionDetector::Result
+LineCollision::Systems::LineCollisionDetector::castResult(ECS::EntityHdl source, ECS::EntityHdl target) {
+	return genericCast(source, target, 0, nullptr);
+}

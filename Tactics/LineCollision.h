@@ -28,6 +28,7 @@ namespace Tactics {
 				ECS::EntityHdl source;
 				ECS::EntityHdl ray;
 				ECS::EntityHdl target;
+				float depth; // how far away the hit object was
 			};
 		} // Tactics::LineCollision::Events
 
@@ -38,6 +39,12 @@ namespace Tactics {
 			class LineCollisionDetector : public ECS::System, 
 				public ECS::AutoEventHandler<ECS::Events::EntityDestroyedEvent> {
 			public:
+
+				struct Result {
+					glm::vec4 color;
+					glm::vec3 normal;
+					float depth;
+				};
 
 				LineCollisionDetector();
 				
@@ -59,6 +66,19 @@ namespace Tactics {
 				// examine one ray and one target
 				bool fireRay(const Tactics::Components::Position3D<> & pos, Components::LineCollisionRay ray, ECS::EntityHdl hdl, bool fireEvent = true);
 
+
+				// get color info from linecast
+				glm::vec4 color(ECS::EntityHdl, ECS::EntityHdl);
+
+				// get normal info from linecast
+				glm::vec3 normal(ECS::EntityHdl, ECS::EntityHdl);
+				
+				// get depth info from linecast
+				float depth(ECS::EntityHdl, ECS::EntityHdl);
+
+				// get full result from cast
+				Result castResult(ECS::EntityHdl, ECS::EntityHdl);
+
 			private:
 
 				// glsl program
@@ -77,6 +97,9 @@ namespace Tactics {
 				// Ray targets
 				// TODO figure out how/if to track ray targets. For now, use all of them
 				//std::vector<ECS::EntityHdl> targets;
+
+				Result genericCast(ECS::EntityHdl, ECS::EntityHdl, int, void *);
+
 			};
 
 		} // Tactics::LineCollision::Systems
