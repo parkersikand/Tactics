@@ -195,6 +195,9 @@
     <ClCompile Include="Util.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="WalkOnSurface.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -339,6 +342,9 @@
     </ClInclude>
     <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkOnSurface.h">
+      <Filter>Header Files\Worlds</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

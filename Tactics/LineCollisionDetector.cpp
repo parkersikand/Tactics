@@ -86,7 +86,7 @@ public:
 		auto * ray = getComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		auto lcd = *createManagedSystem<LineCollision::Systems::LineCollisionDetector>();
 		auto result = lcd.castResult(source2, cube2Hdl);
-		return false;
+		return result.color.y == 1.f;
 	}
 
 }; // class SimpleCollision1World
