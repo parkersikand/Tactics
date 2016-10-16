@@ -13,10 +13,10 @@ using namespace Tactics;
 using namespace Tactics::ECS;
 
 // a simple key handler to move the camera
-struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem, 
-	public virtual Tactics::ECS::EventHandler<Tactics::Events::ScrollEvent> {
+//struct Worlds::BasicWorld::CameraKeyHandler : public Tactics::Systems::KeyInputSystem, 
+//	public virtual Tactics::ECS::EventHandler<Tactics::Events::ScrollEvent> {
 
-	void handle(const Tactics::Events::ScrollEvent & se) {
+	void Worlds::BasicWorld::CameraKeyHandler::handle(const Tactics::Events::ScrollEvent & se) {
 		//std::cout << "Scroll" << std::endl;
 		World & world = *getWorld();
 		auto * pos = world.getComponent<Components::Position3D<> >(camera);
@@ -39,14 +39,7 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem,
 		ECS::EventDispatcher::postEvent(cce);
 	}
 
-	void handle(const Tactics::Events::KeyRepeat & kre) {
-		update(kre.keyCode);
-	}
-	void handle(const Tactics::Events::KeyDown & kde) {
-		update(kde.keyCode);
-	}
-
-	void update(int keycode) {
+	void Worlds::BasicWorld::CameraKeyHandler::update(int keycode) {
 		// rotate the camera, keep it looking at the origin
 		World & world = *getWorld();
 
@@ -94,9 +87,8 @@ struct CameraKeyHandler : public Tactics::Systems::KeyInputSystem,
 		ECS::EventDispatcher::postEvent(cce);
 	}
 
-	EntityHdl camera;
-	float mult = 0.1f;
-}; // CameraKeyHandler
+	
+//}; // CameraKeyHandler
 
 
 void Tactics::Worlds::BasicWorld::setup() {
@@ -125,15 +117,20 @@ void Tactics::Worlds::BasicWorld::setup() {
 
 	// add our key handler to update the camera
 	//CameraKeyHandler ckh;
-	auto & ckh = *createManagedSystem<CameraKeyHandler>();
-	ckh.camera = camera;
-	ECS::EventDispatcher::registerEventHandler<Events::KeyDown>(ckh);
-	ECS::EventDispatcher::registerEventHandler<Events::KeyRepeat>(ckh);
-	ECS::EventDispatcher::registerEventHandler<Events::ScrollEvent>(ckh);
-	registerSystem(ckh);
+	cameraKeyHandler = createManagedSystem<CameraKeyHandler>();
+	cameraKeyHandler->camera = camera;
+	ECS::EventDispatcher::registerEventHandler<Events::KeyDown>(*cameraKeyHandler);
+	ECS::EventDispatcher::registerEventHandler<Events::KeyRepeat>(*cameraKeyHandler);
+	ECS::EventDispatcher::registerEventHandler<Events::ScrollEvent>(*cameraKeyHandler);
+	//registerSystem(ckh);
 }
 
 
 GLFWwindow * Tactics::Worlds::BasicWorld::getWindow() {
 	return windowManager->getWindow();
+}
+
+void Tactics::Worlds::BasicWorld::unregisterCameraKeyHandler() {
+	ECS::EventDispatcher::getInstance()->removeEventHandler(*cameraKeyHandler);
+	destroyManagedSystem(cameraKeyHandler);
 }

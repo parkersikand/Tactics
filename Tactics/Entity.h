@@ -193,6 +193,8 @@ namespace Tactics {
 				return ptr;
 			}
 
+			void destroyManagedSystem(System *);
+
 			// remove an entity from the world
 			void removeEntity(EntityHdl);
 

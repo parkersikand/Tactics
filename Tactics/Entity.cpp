@@ -115,7 +115,17 @@ EntityHdl World::createChildEntity(EntityHdl parent) {
 }
 
 
-//  RunnableWorld
+void World::destroyManagedSystem(System * ptr) {
+	auto it = std::find(managedSystems.begin(), managedSystems.end(), ptr);
+	if (it != managedSystems.end()) {
+		managedSystems.erase(it);
+	}
+	delete ptr;
+}
+
+
+//  RunnableWorld  ////////////////////////////////////////////////////////////
+
 void RunnableWorld::addRunnableSystem(RunnableSystem & rs) {
 	registerSystem(rs);
 	systems.push_back(&rs);

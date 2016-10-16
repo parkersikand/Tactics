@@ -18,5 +18,3 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 	// unregister default input system
 
 }
-
-void

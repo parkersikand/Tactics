@@ -33,15 +33,14 @@ namespace Tactics {
 
 		class BaseEventHandler {
 		public:
-			virtual void handle(const Event &) = 0;
+			virtual void handle(const Event &) {};
 		};
 
 
 		// Event handler interface
 		template <typename EventType>
-		class EventHandler : public BaseEventHandler {
+		class EventHandler : public virtual BaseEventHandler {
 		public:
-			virtual void handle(const Event &) {};
 			virtual void handle(const EventType &) = 0;
 		};
 
@@ -81,6 +80,17 @@ namespace Tactics {
 				// TODO re broadcast event as parent type
 			}
 
+			// remove an event handler from a specific event
+			template <typename EventType>
+			static void removeTypedEventHandler(EventHandler<EventType> & hdl) {
+				auto & handlers = getInstance()->eventHandlers[EventDispatcher::getEventId<EventType>()];
+				auto it = std::find(handlers.begin(), handlers.end(), &hdl);
+				if (it != handlers.end()) {
+					handlers.erase(it);
+				}
+			}
+
+			// remove handler from all events
 			void removeEventHandler(BaseEventHandler & hdl);
 
 		private:
