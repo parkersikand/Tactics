@@ -41,25 +41,15 @@ namespace Tactics {
 
 		void handle(const Events::CameraChangedEvent & evt) {
 			currentCamera = evt.newCamera;
-			
-			// update uniforms
-			
-			//GLuint viewU = glGetUniformLocation(getWorld()->getGlobalSystem<DrawSystem>()->getProgramId(),"view_matrix");
-			//auto vm = getViewMatrix();
-			//glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
-
-			//GLuint projectionU = glGetUniformLocation(getWorld()->getGlobalSystem<DrawSystem>()->getProgramId(), "projection_matrix");
-			//auto pm = getProjectionMatrix();
-			//glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 		}
 
 		glm::mat4 getProjectionMatrix() {
 			ECS::Entity cameraE = getWorld()->entityFromHandle(currentCamera);
 			auto * cameraInfo = cameraE.getComponent<Components::CameraComponent>();
 			if (cameraInfo->projectionType == cameraInfo->PERSPECTIVE) {
-				return glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.01f, 1000.f);
+				return glm::perspective(glm::radians(45.0f), 4.f / 3.f, zNear, zFar);
 			}
-			return glm::ortho(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f);
+			return glm::ortho(-10.f, 10.f, -10.f, 10.f, zNear, zFar);
 		}
 
 		glm::mat4 getViewMatrix() {
@@ -69,9 +59,16 @@ namespace Tactics {
 			return glm::lookAt(glm::vec3(location->x, location->y, location->z), cameraInfo->lookAt, glm::vec3(0, 1, 0));
 		}
 
+		float getZNear() { return zNear; }
+		void setZNear(float f) { zNear = f; }
+		float getZFar() { return zFar; }
+		void setZFar(float f) { zFar = f; }
+
 	private:
 		ECS::EntityHdl currentCamera;
 		
+		float zNear = 0.1f;
+		float zFar = 1000.f;
 	};
 
 } // namespace Tactics

@@ -6,6 +6,7 @@
 #include "Program.h"
 #include "SkeletalAnimation.h"
 #include "BasicWorld.h"
+#include "CameraSystem.h"
 
 #include "lodepng.h"
 
@@ -341,6 +342,14 @@ bool LineCollision::Systems::LineCollisionDetector::fireRay(
 } // fireRay
 
 
+float LineCollision::Systems::LineCollisionDetector::linearizeDepth(float d) {
+	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
+	float zNear = cameraSystem->getZNear();
+	float zFar = cameraSystem->getZFar();
+	return (2 * zNear) / (zFar + zNear - d * (zFar - zNear));
+}
+
+
 LineCollision::Systems::LineCollisionDetector::Result 
 LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source, ECS::EntityHdl target, int value, void * dataPtr) {
 	auto * pos = getWorld()->getComponent<Tactics::Components::Position3D<>>(source);
@@ -432,6 +441,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	auto * bworld = dynamic_cast<Tactics::Worlds::BasicWorld *>(world);
 	glfwSwapBuffers(bworld->getWindow());
 #endif
+
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glEnable(GL_DEPTH_TEST);
 	glViewport(0, 0, bufferAccuracy, bufferAccuracy);
@@ -467,9 +477,10 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormalPng, bufferAccuracy, bufferAccuracy);
 #endif
 
-	std::vector<float> depth(1);
+	float depth;
 	glReadBuffer(GL_DEPTH_ATTACHMENT);
-	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &centerPixelColor[0]);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+	depth = linearizeDepth(depth);
 
 #ifdef TESTING
 	std::vector<float> dbgDepth(bufferAccuracy * bufferAccuracy);
@@ -477,9 +488,9 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	// format pixels
 	std::vector<std::uint8_t> dbgDepthPng(bufferAccuracy * bufferAccuracy * 4);
 	for (unsigned int i = 0; i < dbgDepth.size(); i++) {
-		dbgDepthPng[i * 4] = dbgDepth[i] * 255;
-		dbgDepthPng[i * 4 + 1] = dbgDepth[i] * 255;
-		dbgDepthPng[i * 4 + 2] = dbgDepth[i] * 255;
+		dbgDepthPng[i * 4] = linearizeDepth(dbgDepth[i]) * 255;
+		dbgDepthPng[i * 4 + 1] = linearizeDepth(dbgDepth[i]) * 255;
+		dbgDepthPng[i * 4 + 2] = linearizeDepth(dbgDepth[i]) * 255;
 		dbgDepthPng[i * 4 + 3] = 255;
 	}
 	auto dbgDepthPNGErr = lodepng::encode("LineCollider_DepthDebug.png", dbgDepthPng, bufferAccuracy, bufferAccuracy);
@@ -493,7 +504,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 		*reinterpret_cast<std::vector<std::uint8_t>*>(dataPtr) = centerPixelNormal;
 		break;
 	case 3:
-		*reinterpret_cast<std::vector<float>*>(dataPtr) = depth;
+		*reinterpret_cast<float*>(dataPtr) = depth;
 		break;
 	}
 
@@ -513,7 +524,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	result.normal.y = centerPixelNormal[1] / 255;
 	result.normal.z = centerPixelNormal[2] / 255;
 
-	result.depth = depth[0];
+	result.depth = depth;
 
 	return result;
 } // genericCast

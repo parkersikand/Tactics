@@ -100,6 +100,8 @@ namespace Tactics {
 
 				Result genericCast(ECS::EntityHdl, ECS::EntityHdl, int, void *);
 
+				inline float linearizeDepth(float);
+
 			};
 
 		} // Tactics::LineCollision::Systems
