@@ -144,9 +144,11 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 
 	// set camera info
 	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
-	auto vm = cameraSystem->getViewMatrix();
+	//auto vm = cameraSystem->getViewMatrix();
+	auto vm = glm::lookAt(glm::vec3(5, 5, 5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
-	auto pm = cameraSystem->getProjectionMatrix();
+	//auto pm = cameraSystem->getProjectionMatrix();
+	auto pm = glm::perspective(glm::radians(45.f), 4.f / 3.f, 0.01f, 1000.f);
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 	glm::vec3 lightDir = glm::normalize(glm::vec3(5.f, 10.f, 5.f));
 	glUniform3fv(hwLightDir, 1, &lightDir[0]);
@@ -213,15 +215,19 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 
 // draw unbatched objects
 void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
+	glClearErrors();
 	glUseProgram(programId);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 
 	// set camera info
 	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
-	auto vm = cameraSystem->getViewMatrix();
+	//auto vm = cameraSystem->getViewMatrix();
+	auto vm = glm::lookAt(glm::vec3(5.f, 5.f, 5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 
-	auto pm = cameraSystem->getProjectionMatrix();
+//	auto pm = cameraSystem->getProjectionMatrix();
+	auto pm = glm::perspective(glm::radians(45.f), 4.f / 3.f, 0.01f, 1000.f);
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 
 	glm::vec3 lightDir = glm::normalize(glm::vec3(5.f, 10.f, 5.f));
@@ -237,6 +243,7 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 		// grab and load the model transform
 		auto * modelTransform = e.getComponent<Components::ModelTransform>();
 		auto * location = e.getComponent<Components::Position3D<> >();
+		auto * o3dPtr = e.getComponent<Components::CObject3D>();
 
 		// apply model transform, then translate by Position3D 
 		glm::mat4 modelTransformMatrix =
@@ -247,8 +254,6 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 		// apply transform to normals
 		glm::mat4 ti_model_transform = glm::transpose(glm::inverse(modelTransformMatrix));
 		glUniformMatrix4fv(tiModelTransformU, 1, GL_FALSE, &ti_model_transform[0][0]);
-
-		auto * o3dPtr = e.getComponent<Components::CObject3D>();
 
 		// bind texture buffer
 		glActiveTexture(GL_TEXTURE0); // set texture slot 0 as active
@@ -335,7 +340,7 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 		glDisableVertexAttribArray(2);
 		glDisableVertexAttribArray(3);
 	}
-
+	auto err = glGetError();
 	glClearErrors();
 
 }  //  void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities)

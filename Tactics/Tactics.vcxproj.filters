@@ -201,6 +201,9 @@
     <ClCompile Include="WalkOnSurfaceTest.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="RedCubeWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -347,6 +350,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WalkOnSurface.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="RedCubeWorld.h">
       <Filter>Header Files\Worlds</Filter>
     </ClInclude>
   </ItemGroup>

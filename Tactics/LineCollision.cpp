@@ -19,6 +19,7 @@ LineCollision::Systems::LineCollisionDetector::LineCollisionDetector() {
 	// load program
 	// use default vertex shader
 	programId = Util::ShaderProgramHelper::LoadShaders("shaders/toon1/vertex.glsl", "shaders/ray/fragment.glsl");
+	//programId = Util::ShaderProgramHelper::LoadShaders("shaders/toon1/vertex.glsl", "shaders/toon1/fragment.glsl");
 }
 
 
@@ -128,7 +129,7 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 		else {
 			objId = glm::ivec4(100, 100, 100, 100);
 		}
-		//glUniform4uiv(objectIdU, 1, &objId[0]);
+
 		glUniform1ui(objectIdU, hdl == targetHdl ? 1 : 0);
 
 		// grab and load the model transform
@@ -138,7 +139,6 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 		// apply model transform, then translate by Position3D 
 		modelTransformMatrix =
 			glm::translate(glm::mat4(1), glm::vec3(location->x, location->y, location->z)) * modelTransform->transform;
-		//auto modelTransformU = glGetUniformLocation(programId, "model_transform");
 		glUniformMatrix4fv(modelTransformU, 1, GL_FALSE, &modelTransformMatrix[0][0]);
 
 		// resend uniforms
@@ -192,7 +192,6 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 			glEnableVertexAttribArray(11);
 			glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(Tactics::Components::SkeletalAnimation::VertexBoneInfo), (void *)16);
 		}
-		
 
 		// load vertex data
 		glEnableVertexAttribArray(0);
@@ -200,13 +199,13 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
 		// load normal data
-		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, o3dPtr->normBufId);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
 		glDrawArrays(o3dPtr->drawMode, 0, o3dPtr->count);
 		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 
 	} // for other objects
 }

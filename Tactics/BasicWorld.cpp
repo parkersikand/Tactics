@@ -98,7 +98,7 @@ void Tactics::Worlds::BasicWorld::setup() {
 	addRunnableGlobalSystem(*windowManager);
 
 	auto * basicDraw = createManagedSystem<Systems::BasicDrawSystem>();
-	addSystem(*basicDraw);
+	//addSystem(*basicDraw);
 	
 	// add a camera
 	// TODO figure this out better, less clunky

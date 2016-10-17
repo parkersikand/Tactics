@@ -1,11 +1,20 @@
 #pragma once
 
 // include file to change main worlds
-//#include "AnimatedCubeWorld.h"
-//#include "TexturedCubeWorld.h"
-#include "WalkOnSurface.h"
+
+
+
 
 // define a class "MainWorld" that extends the desired world functionality
+
+//#include "AnimatedCubeWorld.h"
 //class MainWorld : public AnimatedCubeWorld {};
+
+//#include "TexturedCubeWorld.h"
 //class MainWorld : public TexturedCubeWorld {};
-class MainWorld : public Tactics::Worlds::WalkOnSurfaceWorld {};
+
+//#include "WalkOnSurface.h"
+//class MainWorld : public Tactics::Worlds::WalkOnSurfaceWorld {};
+
+#include "RedCubeWorld.h"
+class MainWorld : public RedCubeWorld {};

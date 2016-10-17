@@ -47,9 +47,11 @@ namespace Tactics {
 			ECS::Entity cameraE = getWorld()->entityFromHandle(currentCamera);
 			auto * cameraInfo = cameraE.getComponent<Components::CameraComponent>();
 			if (cameraInfo->projectionType == cameraInfo->PERSPECTIVE) {
-				return glm::perspective(glm::radians(45.0f), 4.f / 3.f, zNear, zFar);
+				//return glm::perspective(glm::radians(45.0f), 4.f / 3.f, zNear, zFar);
+				return glm::perspective(glm::radians(45.0f), 4.f / 3.f, 0.01f, 1000.f);
 			}
-			return glm::ortho(-10.f, 10.f, -10.f, 10.f, zNear, zFar);
+			//return glm::ortho(-10.f, 10.f, -10.f, 10.f, zNear, zFar);
+			return glm::ortho(-10.f, 10.f, -10.f, 10.f, -10.f, 10.f);
 		}
 
 		glm::mat4 getViewMatrix() {

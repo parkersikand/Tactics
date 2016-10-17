@@ -220,6 +220,7 @@
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="RedCubeWorld.cpp" />
     <ClCompile Include="SetupRandomBattleSystem.cpp" />
     <ClCompile Include="SkeletalAnimation.cpp" />
     <ClCompile Include="SystemTest.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Positionable.h" />
     <ClInclude Include="Program.h" />
+    <ClInclude Include="RedCubeWorld.h" />
     <ClInclude Include="SetupRandomBattleSystem.h" />
     <ClInclude Include="SkeletalAnimation.h" />
     <ClInclude Include="System.h" />
