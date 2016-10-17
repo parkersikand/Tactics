@@ -246,7 +246,7 @@ namespace Tactics {
 				_global_system_counter++;
 				return id;
 			}
-			unsigned int _global_system_counter = 1;
+			static unsigned int _global_system_counter; // = 1;
 
 			// global systems. can only be one of a given type
 			System *globalSystems[ECS_MAX_SYSTEM_TYPES] = { NULL };

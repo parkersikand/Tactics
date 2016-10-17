@@ -7,6 +7,7 @@
 
 #define PI 3.1415926535
 
-#define glClearErrors() while(glGetError());
+//#define glClearErrors() while(glGetError());
+#define glClearErrors() for(auto e = glGetError(); e != GL_NO_ERROR; e = glGetError());
 
 #endif

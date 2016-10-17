@@ -26,7 +26,9 @@ void Entity::destroy() {
 	delete this;
 }
 
-// World
+// World  /////////////////////////////////////////////////////////////////////
+
+unsigned int World::_global_system_counter = 1;
 
 // kill all humans
 World::~World() {

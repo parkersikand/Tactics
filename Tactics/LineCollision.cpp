@@ -356,10 +356,13 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	auto * pos = getWorld()->getComponent<Tactics::Components::Position3D<>>(source);
 	auto  *ray = getWorld()->getComponent<LineCollision::Components::LineCollisionRay>(source);
 	
+//	glClearErrors();
+
 	glUseProgram(programId);
 
 	//glClearErrors();
-	//while (glGetError() != GL_NO_ERROR);
+	auto e = glGetError();
+	while (e != GL_NO_ERROR) e = glGetError();
 
 	GLuint fbo;
 	glGenFramebuffers(1, &fbo);
@@ -375,7 +378,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 		std::cout << "OpenGL error INVALID_OPERATION" << std::endl;
 		assert(false);
 	}
-	else {
+	else if (err) {
 		std::cout << "OpenGL error" << std::endl;
 		assert(false);
 	}
@@ -466,21 +469,22 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	auto dbgColorPNGErr = lodepng::encode("LineCollider_ColorDebug.png", dbgColor, bufferAccuracy, bufferAccuracy);
 #endif
 
-	std::vector<std::uint8_t> centerPixelNormal(3);
+	std::vector<std::uint8_t> centerPixelNormal(4);
 	glReadBuffer(GL_COLOR_ATTACHMENT1);
-	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &centerPixelNormal[0]);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &centerPixelNormal[0]);
 
 #ifdef TESTING
-	std::vector<std::uint8_t> dbgNormal(bufferAccuracy * bufferAccuracy * 3);
-	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGB, GL_UNSIGNED_BYTE, &dbgNormal[0]);
-	std::vector<std::uint8_t> dbgNormalPng(bufferAccuracy * bufferAccuracy * 4);
-	for (unsigned int i = 0, j = 0; i < dbgNormal.size(); i+= 3, j += 4) {
-		dbgNormalPng[j] = dbgNormal[i];
-		dbgNormalPng[j + 1] = dbgNormal[i+1];
-		dbgNormalPng[j + 2] = dbgNormal[i+2];
-		dbgNormalPng[j + 3] = 255;
-	}
-	auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormalPng, bufferAccuracy, bufferAccuracy);
+	std::vector<std::uint8_t> dbgNormal(bufferAccuracy * bufferAccuracy * 4);
+	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGBA, GL_UNSIGNED_BYTE, &dbgNormal[0]);
+	//std::vector<std::uint8_t> dbgNormalPng(bufferAccuracy * bufferAccuracy * 4);
+	//for (unsigned int i = 0, j = 0; i < dbgNormal.size(); i+= 3, j += 4) {
+	//	dbgNormalPng[j] = dbgNormal[i];
+	//	dbgNormalPng[j + 1] = dbgNormal[i+1];
+	//	dbgNormalPng[j + 2] = dbgNormal[i+2];
+	//	dbgNormalPng[j + 3] = 255;
+	//}
+	//auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormalPng, bufferAccuracy, bufferAccuracy);
+	auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormal, bufferAccuracy, bufferAccuracy);
 #endif
 
 	float depth;
