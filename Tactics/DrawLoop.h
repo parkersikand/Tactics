@@ -41,6 +41,7 @@ namespace Tactics {
 
 			void setWindow(GLFWwindow * wind) {
 				myWindow = wind;
+				glfwGetWindowSize(wind, reinterpret_cast<int*>(&width), reinterpret_cast<int*>(&height));
 			}
 
 		private:

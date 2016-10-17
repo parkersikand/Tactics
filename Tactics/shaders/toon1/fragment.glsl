@@ -90,5 +90,5 @@ void main() {
 	pastelizeHSL(colorHSL);
 	color = vec4(hsl2rgb(colorHSL), 1.0);
 
-	color = vec4(0,1.f,0,1.f);
+	//color = vec4(0,1.f,0,1.f);
 }

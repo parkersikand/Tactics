@@ -199,6 +199,7 @@
     <ClCompile Include="BasicWorld.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
     <ClCompile Include="ClockSystem.cpp" />
+    <ClCompile Include="ColoredDrawSystem.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="ComponentTest.cpp" />
     <ClCompile Include="DrawLoop.cpp" />
@@ -233,6 +234,8 @@
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\colored\fragment.glsl" />
+    <None Include="shaders\colored\vertex.glsl" />
     <None Include="shaders\ray\fragment.glsl" />
     <None Include="shaders\ray\vertex.glsl" />
     <None Include="shaders\simple\fragment.glsl" />
@@ -245,6 +248,7 @@
     <ClInclude Include="AnimatedCubeWorld.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="BasicDrawSystem.h" />
+    <ClInclude Include="ColoredDrawSystem.h" />
     <ClInclude Include="BasicWorld.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraSystem.h" />

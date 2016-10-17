@@ -72,4 +72,7 @@ void main() {
 	}
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);
+
+	// debug
+    //  gl_Position = pvm * vec4(vxPosition, 1);
 }

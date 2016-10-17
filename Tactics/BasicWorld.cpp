@@ -6,6 +6,7 @@
 #include "CameraSystem.h"
 #include "WindowManager.h"
 #include "BasicDrawSystem.h"
+#include "ColoredDrawSystem.h"
 #include "common.h"
 
 
@@ -98,7 +99,6 @@ void Tactics::Worlds::BasicWorld::setup() {
 	addRunnableGlobalSystem(*windowManager);
 
 	auto * basicDraw = createManagedSystem<Systems::BasicDrawSystem>();
-	//addSystem(*basicDraw);
 	
 	// add a camera
 	// TODO figure this out better, less clunky
@@ -108,7 +108,7 @@ void Tactics::Worlds::BasicWorld::setup() {
 	cameraComponent->projectionType = cameraComponent->PERSPECTIVE;
 	//	cameraComponent->projectionType = cameraComponent->ISOMETRIC;
 	Components::Position3D<> * cameraPos = addComponent<Components::Position3D<> >(camera);
-	cameraPos->x = 0.0f;
+	cameraPos->x = 10.0f;
 	cameraPos->y = 10.f;
 	cameraPos->z = 20.f;
 	Events::CameraChangedEvent cce;

@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include "DrawSystem.h"
 #include "Object3D.h"
+#include "SkeletalAnimation.h"
 
 namespace Tactics {
 
@@ -29,6 +30,9 @@ namespace Tactics {
 
 			void setClearColor(glm::vec4 col) { clearColor = col; }
 			glm::vec4 getClearColor() { return clearColor; }
+
+			// send SkeletalAnimation data to shaders
+			static void HandleSkeletal(Components::SkeletalAnimation * sa, GLuint programId, GLuint isSkeletalU = 0, unsigned int startLocation = 4);
 
 		private:
 
@@ -89,7 +93,7 @@ namespace Tactics {
 		addComponent(e, Components::Position3D<>());
 		addComponent(e, Components::CObject3D());
 		addComponent(e, Components::ModelTransform());
-		addComponent(e, Components::BasicDrawSystemBatch());
+		//addComponent(e, Components::BasicDrawSystemBatch());
 		return addComponent(e, Components::DrawSystemTag<Systems::BasicDrawSystem>());
 	}
 

@@ -10,5 +10,5 @@ void main() {
   // default error color
   color = vec3(0.0,1.0,0.0);
 
-  color = texture( fragmentTextureSampler, UV ).rgb;
+  //color = texture( fragmentTextureSampler, UV ).rgb;
 }

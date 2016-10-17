@@ -88,6 +88,9 @@
     <Filter Include="Source Files\Tests\concepts">
       <UniqueIdentifier>{c6a23dbd-1ed3-4825-b234-9a5b57b2b270}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\colored">
+      <UniqueIdentifier>{f48a6dea-0d6a-4088-9592-20d3d2546e32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -204,6 +207,9 @@
     <ClCompile Include="RedCubeWorld.cpp">
       <Filter>Source Files\Worlds</Filter>
     </ClCompile>
+    <ClCompile Include="ColoredDrawSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -223,6 +229,12 @@
     </None>
     <None Include="shaders\ray\vertex.glsl">
       <Filter>Resource Files\shaders\ray</Filter>
+    </None>
+    <None Include="shaders\colored\fragment.glsl">
+      <Filter>Resource Files\shaders\colored</Filter>
+    </None>
+    <None Include="shaders\colored\vertex.glsl">
+      <Filter>Resource Files\shaders\colored</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -354,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="RedCubeWorld.h">
       <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="ColoredDrawSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

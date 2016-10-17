@@ -15,7 +15,11 @@ using namespace Tactics;
 Systems::BasicDrawSystem::BasicDrawSystem() {
 	// load glsl program
 	programId = Util::ShaderProgramHelper::LoadShaders("shaders/toon1/vertex.glsl", "shaders/toon1/fragment.glsl");
+	
+	// use these for debugging
 	//programId = Util::ShaderProgramHelper::LoadShaders("shaders/simple/vertex.glsl", "shaders/simple/fragment.glsl");
+	//programId = Util::ShaderProgramHelper::LoadShaders("shaders/colored/vertex.glsl", "shaders/colored/fragment.glsl");
+	
 	glUseProgram(programId);
 	viewU = glGetUniformLocation(programId, "view_matrix");
 	projectionU = glGetUniformLocation(programId, "projection_matrix");
@@ -194,9 +198,9 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 			glUniformMatrix4fv(modelTransformU, 1, GL_FALSE, &modelTransformMatrix[0][0]);
 			
 			// apply transform to normals
-			//glm::mat4 ti_model_transform = glm::transpose(glm::inverse(modelTransformMatrix));
-			//glUniformMatrix4fv(tiModelTransformU, 1, GL_FALSE, &ti_model_transform[0][0]);
-			glUniformMatrix4fv(tiModelTransformU, 1, GL_FALSE, &modelTransformMatrix[0][0]);
+			glm::mat4 ti_model_transform = glm::transpose(glm::inverse(modelTransformMatrix));
+			glUniformMatrix4fv(tiModelTransformU, 1, GL_FALSE, &ti_model_transform[0][0]);
+//			glUniformMatrix4fv(tiModelTransformU, 1, GL_FALSE, &modelTransformMatrix[0][0]);
 
 			// draw
 			glDrawArrays(batch.drawType, offset, oi.count);
@@ -213,21 +217,73 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 	draw(entities);
 }
 
+void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimation * sa, GLuint programId, GLuint isSkeletalU, unsigned int startLocation) {
+	// TODO abstract this away into AnimationSystem
+	// update time
+	double currentTimeMS = glfwGetTime() * 1000;
+	if (currentTimeMS - sa->anim_start > sa->animations[sa->currentAnimation].keyFrames.size() * sa->tick_ms) {
+		sa->anim_start = currentTimeMS;
+	}
+	SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(sa, currentTimeMS - sa->anim_start);
+
+	// set flag
+	glUniform1ui(isSkeletalU, GL_TRUE);
+
+	// update matrices
+	for (unsigned int i = 0; i < sa->bones.size(); i++) {
+		auto boneMatU = glGetUniformLocation(programId, ("object_bones[" + std::to_string(i) + "]").c_str());
+		glUniformMatrix4fv(boneMatU, 1, GL_FALSE, &sa->bones[i].boneSpace[0][0]);
+
+		auto boneTransformU = glGetUniformLocation(programId, ("bone_transforms[" + std::to_string(i) + "]").c_str());
+		//auto bt = glm::rotate(glm::mat4(), glm::radians(-90.f), glm::vec3(1,0,0)) * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
+		auto bt = sa->bones[i].boneSpace * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale /* * sa->bones[i].boneSpace*/;
+		//bt = sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
+		glUniformMatrix4fv(boneTransformU, 1, GL_FALSE, &bt[0][0]);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, sa->vertexBoneInfoVBO);
+	unsigned int offset = 0;
+	for (unsigned int i = startLocation, offset = 0; i < 4; i++, offset++) {
+		glEnableVertexAttribArray(i);
+		glVertexAttribIPointer(i, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)offset);
+	}
+	for (unsigned int i = startLocation + 4; i < 4; i++, offset += 4) {
+		glEnableVertexAttribArray(i);
+		glVertexAttribPointer(i, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)offset);
+	}
+	/*
+	glEnableVertexAttribArray(4);
+	glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)0);
+	glEnableVertexAttribArray(5);
+	glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)1);
+	glEnableVertexAttribArray(6);
+	glVertexAttribIPointer(6, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)2);
+	glEnableVertexAttribArray(7);
+	glVertexAttribIPointer(7, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)3);
+	//			glVertexAttribIPointer(4, 4, GL_BYTE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)0);
+	glEnableVertexAttribArray(8);
+	glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)4);
+	glEnableVertexAttribArray(9);
+	glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)8);
+	glEnableVertexAttribArray(10);
+	glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)12);
+	glEnableVertexAttribArray(11);
+	glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)16);
+	*/
+}
+
 // draw unbatched objects
 void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 	glClearErrors();
 	glUseProgram(programId);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 
 	// set camera info
 	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
-	//auto vm = cameraSystem->getViewMatrix();
-	auto vm = glm::lookAt(glm::vec3(5.f, 5.f, 5.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f));
+	auto vm = cameraSystem->getViewMatrix();
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 
-//	auto pm = cameraSystem->getProjectionMatrix();
-	auto pm = glm::perspective(glm::radians(45.f), 4.f / 3.f, 0.01f, 1000.f);
+	auto pm = cameraSystem->getProjectionMatrix();
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 
 	glm::vec3 lightDir = glm::normalize(glm::vec3(5.f, 10.f, 5.f));
@@ -235,8 +291,9 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 
 	for (auto & e : entities) {
 		auto * bc = e.getComponent<Components::BasicDrawSystemBatch>();
-		if (bc == nullptr || bc->isBatched) continue;
+		if (bc != nullptr && bc->isBatched) continue;
 
+		// by default, assume there is a texture
 		glUniform1ui(useTextureU, GL_TRUE);
 		glUniform1ui(isSkeletalU, GL_FALSE);
 
@@ -262,7 +319,9 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 
 		// load vertex data
 		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, o3dPtr->vxBufId);
+		glBindBuffer(GL_ARRAY_BUFFER, o3dPtr->vxBufId); 
+		GLint nBufferSize;
+		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &nBufferSize);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
 
 		// load uv data
@@ -286,50 +345,7 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 
 		// check for SkeletalAnimation
 		auto * sa = e.getComponent<Components::SkeletalAnimation>();
-		if (sa != nullptr) {
-
-			// TODO abstract this away into AnimationSystem
-			// update time
-			double currentTimeMS = glfwGetTime() * 1000;
-			if (currentTimeMS - sa->anim_start > sa->animations[sa->currentAnimation].keyFrames.size() * sa->tick_ms) {
-				sa->anim_start = currentTimeMS;
-			}
-			SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(sa, currentTimeMS - sa->anim_start);
-
-			// set flag
-			glUniform1ui(isSkeletalU, GL_TRUE);
-
-			// update matrices
-			for (unsigned int i = 0; i < sa->bones.size(); i++) {
-				auto boneMatU = glGetUniformLocation(programId, ("object_bones[" + std::to_string(i) + "]").c_str());
-				glUniformMatrix4fv(boneMatU, 1, GL_FALSE, &sa->bones[i].boneSpace[0][0]);
-				
-				auto boneTransformU = glGetUniformLocation(programId, ("bone_transforms[" + std::to_string(i) + "]").c_str());
-				//auto bt = glm::rotate(glm::mat4(), glm::radians(-90.f), glm::vec3(1,0,0)) * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
-				auto bt = sa->bones[i].boneSpace * sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale /* * sa->bones[i].boneSpace*/;
-				//bt = sa->bones[i].translation * sa->bones[i].rotation * sa->bones[i].scale;
-				glUniformMatrix4fv(boneTransformU, 1, GL_FALSE, &bt[0][0]);
-			}
-
-			glBindBuffer(GL_ARRAY_BUFFER, sa->vertexBoneInfoVBO);
-			glEnableVertexAttribArray(4);
-			glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)0);
-			glEnableVertexAttribArray(5);
-			glVertexAttribIPointer(5, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)1);
-			glEnableVertexAttribArray(6);
-			glVertexAttribIPointer(6, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)2);
-			glEnableVertexAttribArray(7);
-			glVertexAttribIPointer(7, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)3);
-//			glVertexAttribIPointer(4, 4, GL_BYTE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)0);
-			glEnableVertexAttribArray(8);
-			glVertexAttribPointer(8, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)4);
-			glEnableVertexAttribArray(9);
-			glVertexAttribPointer(9, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)8);
-			glEnableVertexAttribArray(10);
-			glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)12);
-			glEnableVertexAttribArray(11);
-			glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)16);
-		}
+		if (sa != nullptr) HandleSkeletal(sa, programId, isSkeletalU);
 
 		// call draw
 		glDrawArrays(o3dPtr->drawMode, 0, o3dPtr->count);

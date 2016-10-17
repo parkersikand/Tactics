@@ -5,6 +5,7 @@
 #include "OBJLoader.h"
 #include "Object3D.h"
 #include "BasicDrawSystem.h"
+#include "ColoredDrawSystem.h"
 
 using namespace Tactics;
 using namespace Tactics::ECS;
@@ -12,9 +13,10 @@ using namespace Tactics::ECS;
 void RedCubeWorld::setup() {
 	Worlds::BasicWorld::setup();
 
-	// textured cube
+	// red cube
 	EntityHdl cube = newEntity();
 	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem> >(cube);
+	addComponent<Components::ModelTransform>(cube);
 	std::vector<glm::vec3> vx, norm;
 	std::vector<glm::vec2> uvs;
 	LoadObj("assets/models/correctCube.obj", vx, uvs, norm, true);
@@ -25,5 +27,5 @@ void RedCubeWorld::setup() {
 	cube_pos->y = 0;
 	cube_pos->z = 0;
 	auto * color = addComponent<Components::Colored3D>(cube);
-	Components::Colored3DHelper::SingleColor(color, cube3d, glm::vec3(5.f, 0.f, 0.f));
+	Components::Colored3DHelper::SingleColor(color, cube3d, glm::vec3(0.5f, 0.f, 0.f));
 }
