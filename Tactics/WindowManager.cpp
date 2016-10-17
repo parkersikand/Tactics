@@ -18,13 +18,17 @@ WindowManager::~WindowManager() {
 
 void WindowManager::onRegister(ECS::RunnableWorld & world) {
 	// add top level drawing
-	Systems::DrawEventShooter * des = new Systems::DrawEventShooter;
+//	Systems::DrawEventShooter * des = new Systems::DrawEventShooter;
+	auto * des = getWorld()->createManagedSystem<Systems::DrawEventShooter>();
 	world.addRunnableGlobalSystem(*des);
 
-	Systems::DrawLoop * drawLoop = new Systems::DrawLoop(myWindow);
+//	Systems::DrawLoop * drawLoop = new Systems::DrawLoop(myWindow);
+	auto * drawLoop = getWorld()->createManagedSystem<Systems::DrawLoop>();
+	drawLoop->setWindow(myWindow);
 	world.addGlobalSystem(*drawLoop);
 
-	CameraSystem * cameraSystem = new CameraSystem;
+//	CameraSystem * cameraSystem = new CameraSystem;
+	auto * cameraSystem = getWorld()->createManagedSystem<CameraSystem>();
 	world.addGlobalSystem(*cameraSystem);
 }
 

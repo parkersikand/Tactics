@@ -12,6 +12,11 @@ namespace Tactics {
 	template <typename SystemEventType>
 	class EventedSystem : public ECS::EventHandler<SystemEventType>, public virtual ECS::System {
 	public:
+
+		~EventedSystem() {
+			ECS::EventDispatcher::removeTypedEventHandler<SystemEventType>(*this);
+		}
+
 		EventedSystem() {
 			ECS::EventDispatcher::registerEventHandler<SystemEventType>(*this);
 		}

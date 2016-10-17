@@ -13,7 +13,7 @@ namespace Tactics {
 	namespace Worlds {
 
 		// simple world with WindowManager and DrawSystem
-		class BasicWorld : public virtual Tactics::ECS::RunnableWorld {
+		class BasicWorld : public Tactics::ECS::RunnableWorld {
 		public:
 
 			struct CameraKeyHandler : public virtual Tactics::Systems::KeyInputSystem,

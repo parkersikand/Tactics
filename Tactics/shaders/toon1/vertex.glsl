@@ -37,7 +37,11 @@ uniform mat4 ti_model_transform;
 // skeletal flag
 uniform bool isSkeletal;
 
+// pass through UV
 out vec2 UV;
+
+// pass through normal
+out vec3 varyingNormal;
 
 void main() {
 
@@ -52,6 +56,7 @@ void main() {
 	// pass through color & uv
 	vsColor = color;
 	UV = uv;
+	varyingNormal = normal;
 
 	mat4 finalBone = mat4(1.0);
 

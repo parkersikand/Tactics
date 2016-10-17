@@ -77,7 +77,7 @@ namespace Tactics {
 		// stores the actual components
 		class World {
 		public:
-			~World();
+			virtual ~World();
 
 			World();
 
@@ -235,7 +235,7 @@ namespace Tactics {
 			// managed systems. we will delete these in the destructor
 			std::vector<System *> managedSystems;
 
-			typedef int SystemId;
+			typedef unsigned int SystemId;
 
 			// function to lookup global system by type
 			template <typename SystemType>
@@ -246,6 +246,13 @@ namespace Tactics {
 				_global_system_counter++;
 				return id;
 			}
+			// TODO figure out why local global counter doesn't work
+			/*
+			  It's becuse the local global system counter value resets as new worlds are created,
+			  but the static id in the function stays set globally. So the function value might be
+			  stored as 1, but the global counter has been reset to 1.
+			*/
+			//unsigned int _global_system_counter_ = 1;
 			static unsigned int _global_system_counter; // = 1;
 
 			// global systems. can only be one of a given type

@@ -7,8 +7,6 @@
 layout(location = 0) in vec3 vxPosition;
 layout(location = 1) in vec3 vxNormal;
 
-out vec3 normal;
-
 // per vertex bone info
 layout(location = 4) in uint[MAX_BONES] boneIds; // gets locations 4,5,6,7
 layout(location = 8) in float[MAX_BONES] boneWeights; // 8,9,10,11
@@ -24,6 +22,8 @@ uniform mat4 model_transform;
 
 // skeletal flag
 uniform bool isSkeletal;
+
+varying vec3 normal;
 
 void main() {
 

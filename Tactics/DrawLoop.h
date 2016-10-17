@@ -29,13 +29,18 @@ namespace Tactics {
 		// Global system that contains child drawing systems
 		class DrawLoop : public virtual EventedSystem<DrawEvent> {
 		public:
-
+			
+			DrawLoop() {};
 			DrawLoop(GLFWwindow * wind);
 
 			void handle(const DrawEvent &);
 
 			void addSystem(BaseAbstractDrawSystem & sys) {
 				systems.push_back(&sys);
+			}
+
+			void setWindow(GLFWwindow * wind) {
+				myWindow = wind;
 			}
 
 		private:
