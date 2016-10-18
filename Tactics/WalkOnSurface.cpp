@@ -190,6 +190,7 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 	auto * floorColor = addComponent<Components::Colored3D>(playerController->floorHdl);
 	Components::Colored3DHelper::SingleColor(floorColor, floor3d, glm::vec3(0.6, 0.6, 0.6));
 	floorHdl = playerController->floorHdl;
+	addComponent<LineCollision::Components::LineCollisionTarget>(playerController->floorHdl);
 
 	// create updater system
 	auto * pcu = createManagedSystem<PlayerControllerUpdater>();
