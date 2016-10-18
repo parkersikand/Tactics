@@ -95,12 +95,12 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		// create linecast source
 		ECS::EntityHdl sourceHdl = getWorld()->newEntity();
 		auto * sourcePos = getWorld()->addComponent<Components::Position3D<>>(sourceHdl);
-		sourcePos->x = position->x + direction.x;
-		sourcePos->y = position->y + 1.f;
-		sourcePos->z = position->z + direction.z;
+		sourcePos->x = position->x;// +direction.x;
+		sourcePos->y = position->y;// +1.f;
+		sourcePos->z = position->z;// +direction.z;
 		auto * ray = getWorld()->addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		// cast ray straight down
-		ray->direction = glm::vec3(0.f, -1.f, 0.f);
+		ray->direction = glm::vec3(direction.x, -1.f, direction.y);
 
 		// make sure floor is a LineCollisionTarget
 		getWorld()->addComponent<LineCollision::Components::LineCollisionTarget>(floorHdl);
@@ -188,6 +188,7 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 	Components::CObject3DHelper::setData(floor3d, vx, uv, norm);
 	auto * floorColor = addComponent<Components::Colored3D>(playerController->floorHdl);
 	Components::Colored3DHelper::SingleColor(floorColor, floor3d, glm::vec3(0.6, 0.6, 0.6));
+	floorHdl = playerController->floorHdl;
 
 	// create updater system
 	auto * pcu = createManagedSystem<PlayerControllerUpdater>();

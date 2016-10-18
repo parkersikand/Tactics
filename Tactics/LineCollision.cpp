@@ -356,11 +356,10 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	auto * pos = getWorld()->getComponent<Tactics::Components::Position3D<>>(source);
 	auto  *ray = getWorld()->getComponent<LineCollision::Components::LineCollisionRay>(source);
 	
-//	glClearErrors();
+	glClearErrors();
 
 	glUseProgram(programId);
 
-	//glClearErrors();
 	auto e = glGetError();
 	while (e != GL_NO_ERROR) e = glGetError();
 

@@ -18,6 +18,9 @@ namespace Tactics {
 			bool testStep1();
 
 			struct PlayerController;
+			
+			ECS::EntityHdl floorHdl;
+
 		protected:
 			
 			PlayerController * playerController;
