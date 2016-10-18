@@ -9,9 +9,24 @@ layout(location = 1) out vec4 outNormal;
 
 in vec3 varyingNormal;
 
+// convert a float from [-1,1] to [0,1]
+float shiftVal(float val) {
+  return (val + 1) / 2;
+}
+
+vec4 shiftVec4(vec4 val) {
+  vec4 outgoing;
+  outgoing.x = shiftVal(val.x);
+  outgoing.y = shiftVal(val.y);
+  outgoing.z = shiftVal(val.z);
+  outgoing.w = shiftVal(val.w);
+  return outgoing;
+}
+
 void main() {
 
-  outNormal = vec4(varyingNormal, 1.f);
+//  outNormal = vec4(varyingNormal, 1.f);
+  outNormal = shiftVec4(vec4(varyingNormal, 1.f));
 
   if(objectId > uint(0) ) {
     color = vec4(1.0,1.0,1.0,1.0);

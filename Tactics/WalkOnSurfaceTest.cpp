@@ -35,7 +35,7 @@ TEST(WalkOnSurface, visualize_level_1) {
 
 	// call generic cast to generate debug images
 	auto lcd = *world.createManagedSystem<LineCollision::Systems::LineCollisionDetector>();
-	lcd.castResult(camera, world.floorHdl);
+	auto result = lcd.castResult(camera, world.floorHdl);
 
 	// issue draw call
 	Tactics::DrawEvent de;
