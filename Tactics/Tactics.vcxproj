@@ -224,6 +224,7 @@
     <ClCompile Include="RedCubeWorld.cpp" />
     <ClCompile Include="SetupRandomBattleSystem.cpp" />
     <ClCompile Include="SkeletalAnimation.cpp" />
+    <ClCompile Include="SpinningSuzanneWorld.cpp" />
     <ClCompile Include="SystemTest.cpp" />
     <ClCompile Include="TexturedCubeWorld.cpp" />
     <ClCompile Include="ThreadedSystem.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="RedCubeWorld.h" />
     <ClInclude Include="SetupRandomBattleSystem.h" />
     <ClInclude Include="SkeletalAnimation.h" />
+    <ClInclude Include="SpinningSuzanne.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="TexturedCubeWorld.h" />
     <ClInclude Include="ThreadedSystem.h" />

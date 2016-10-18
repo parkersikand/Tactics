@@ -210,6 +210,9 @@
     <ClCompile Include="ColoredDrawSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="SpinningSuzanneWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -369,6 +372,9 @@
     </ClInclude>
     <ClInclude Include="ColoredDrawSystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinningSuzanne.h">
+      <Filter>Header Files\Worlds</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

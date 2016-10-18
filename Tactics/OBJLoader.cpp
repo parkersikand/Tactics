@@ -1,6 +1,7 @@
 
 
 #include "OBJLoader.h"
+#include "Object3D.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -10,96 +11,6 @@
 #include <fstream>
 #include <sstream>
 
-// TODO this is horribly slow
-/*
-bool LoadObj(const char * path,
-	std::vector<glm::vec3> & out_vertices,
-	std::vector<glm::vec2> & out_uvs,
-	std::vector<glm::vec3> & out_normals,
-	bool flipUVs) {
-
-	std::vector<glm::vec3> tmp_vertices;
-	std::vector<glm::vec2> tmp_uvs;
-	std::vector<glm::vec3> tmp_normals;
-
-	FILE * file = fopen(path, "rb");
-	if (file == NULL) {
-		std::cout << "Could not open file \"" << path << "\"" << std::endl;
-		return false;
-	}
-
-	char lineHead[128];
-	int res = 0;
-	while (res != EOF) {
-		res = fscanf(file, "%s", lineHead);
-
-	    if (strcmp(lineHead, "v") == 0) { // vertex
-			float x, y, z;
-			fscanf(file, "%f %f %f", &x, &y, &z);
-			tmp_vertices.push_back(glm::vec3(x, y, z));
-		}
-		else if (strcmp(lineHead, "vn") == 0) {
-			float x, y, z;
-			fscanf(file, "%f %f %f", &x, &y, &z);
-			tmp_normals.push_back(glm::vec3(x, y, z));
-		}
-		else if (strcmp(lineHead, "vt") == 0) {
-			float u, v;
-			fscanf(file, "%f %f", &u, &v);
-			tmp_uvs.push_back(glm::vec2(u, v));
-		}
-		else if (strcmp(lineHead, "f") == 0) { // face
-			int v1, uv1, n1, v2, uv2, n2, v3, uv3, n3;
-
-			char buf[1024];
-			fgets(buf, sizeof(buf), file);
-
-			if (std::regex_search(buf, std::regex("(\\d+)/(\\d+)/(\\d+)"))) {
-				sscanf(buf, "%d/%d/%d %d/%d/%d %d/%d/%d",
-					&v1, &uv1, &n1, &v2, &uv2, &n2, &v3, &uv3, &n3);
-				if (flipUVs) {
-					glm::vec2 tmpUV = tmp_uvs[uv1 - 1];
-					tmpUV.y = 1.f - tmpUV.y;
-					out_uvs.push_back(tmpUV);
-					tmpUV = tmp_uvs[uv2 - 1];
-					tmpUV.y = 1.f - tmpUV.y;
-					out_uvs.push_back(tmpUV);
-					tmpUV = tmp_uvs[uv3 - 1];
-					tmpUV.y = 1.f - tmpUV.y;
-					out_uvs.push_back(tmpUV);
-				}
-				else {
-					out_uvs.push_back(tmp_uvs[uv1 - 1]);
-					out_uvs.push_back(tmp_uvs[uv2 - 1]);
-					out_uvs.push_back(tmp_uvs[uv3 - 1]);
-				}
-				
-			}
-			else if (std::regex_search(buf, std::regex("(\\d+)//(\\d+)"))) {
-				sscanf(buf, "%d//%d %d//%d %d//%d",
-					&v1, &n1, &v2, &n2, &v3, &n3);
-			}
-			else {
-				printf("Could not parse line:\n%s\n", buf);
-			}
-
-			out_vertices.push_back(tmp_vertices[v1 - 1]);
-			out_vertices.push_back(tmp_vertices[v2 - 1]);
-			out_vertices.push_back(tmp_vertices[v3 - 1]);
-
-			out_normals.push_back(tmp_normals[n1 - 1]);
-			out_normals.push_back(tmp_normals[n2 - 1]);
-			out_normals.push_back(tmp_normals[n3 - 1]);
-		}
-	}
-
-	std::cout << "Read " << out_vertices.size() << " vertices" << std::endl;
-	std::cout << "Read " << out_uvs.size() << " uvs" << std::endl;
-	std::cout << "Read " << out_normals.size() << " normals" << std::endl;
-
-	return true;
-}
-*/
 
 // stream based implementation, very fast
 bool LoadObj(const char * path,
@@ -196,3 +107,10 @@ bool LoadObj(const char * path,
 }
 
 
+bool LoadObj(Tactics::Components::CObject3D * obj, const char * filename) {
+	std::vector<glm::vec3> vx, norm;
+	std::vector<glm::vec2> uv;
+	LoadObj(filename, vx, uv, norm);
+	Tactics::Components::CObject3DHelper::setData(obj, vx, uv, norm);
+	return true;
+}

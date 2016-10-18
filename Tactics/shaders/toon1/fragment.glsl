@@ -86,9 +86,13 @@ void main() {
 	}
     
 	colorHSL.z *= max(0.05, intensity);
-	toonifyColorHSL(colorHSL);
-	pastelizeHSL(colorHSL);
+	//toonifyColorHSL(colorHSL);
+	//pastelizeHSL(colorHSL);
 	color = vec4(hsl2rgb(colorHSL), 1.0);
 
+	// debugging
 	//color = vec4(0,1.f,0,1.f);
+	//if(intensity < 0.05) {
+	//  color = vec4(0,1.f,0,1.f);
+	//}
 }

@@ -153,8 +153,10 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 	//auto pm = cameraSystem->getProjectionMatrix();
 	auto pm = glm::perspective(glm::radians(45.f), 4.f / 3.f, 0.01f, 1000.f);
+	
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 	glm::vec3 lightDir = glm::normalize(glm::vec3(5.f, 10.f, 5.f));
+	
 	glUniform3fv(hwLightDir, 1, &lightDir[0]);
 	glActiveTexture(GL_TEXTURE0); // set texture slot 0 as active
 	glUniform1ui(useTextureU, 0);
