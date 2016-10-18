@@ -212,6 +212,7 @@
     <ClCompile Include="FBXTest.cpp" />
     <ClCompile Include="GLVector.cpp" />
     <ClCompile Include="GuideLines.cpp" />
+    <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LineCollision.cpp" />
     <ClCompile Include="LineCollisionDetector.cpp" />
@@ -237,6 +238,8 @@
   <ItemGroup>
     <None Include="shaders\colored\fragment.glsl" />
     <None Include="shaders\colored\vertex.glsl" />
+    <None Include="shaders\heightmap\fragment.glsl" />
+    <None Include="shaders\heightmap\vertex.glsl" />
     <None Include="shaders\ray\fragment.glsl" />
     <None Include="shaders\ray\vertex.glsl" />
     <None Include="shaders\simple\fragment.glsl" />
@@ -265,6 +268,7 @@
     <ClInclude Include="FBX.h" />
     <ClInclude Include="GLVector.h" />
     <ClInclude Include="GuideLines.h" />
+    <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="KeyInputSystem.h" />
     <ClInclude Include="Level.h" />

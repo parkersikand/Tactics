@@ -91,6 +91,9 @@
     <Filter Include="Resource Files\shaders\colored">
       <UniqueIdentifier>{f48a6dea-0d6a-4088-9592-20d3d2546e32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\heightmap">
+      <UniqueIdentifier>{5ed6c6f9-313e-4961-8efe-a632253d516f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -213,6 +216,9 @@
     <ClCompile Include="SpinningSuzanneWorld.cpp">
       <Filter>Source Files\Worlds</Filter>
     </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>Source Files\Concepts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -238,6 +244,12 @@
     </None>
     <None Include="shaders\colored\vertex.glsl">
       <Filter>Resource Files\shaders\colored</Filter>
+    </None>
+    <None Include="shaders\heightmap\fragment.glsl">
+      <Filter>Resource Files\shaders\heightmap</Filter>
+    </None>
+    <None Include="shaders\heightmap\vertex.glsl">
+      <Filter>Resource Files\shaders\heightmap</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -375,6 +387,9 @@
     </ClInclude>
     <ClInclude Include="SpinningSuzanne.h">
       <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Header Files\Concepts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
