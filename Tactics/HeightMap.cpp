@@ -41,7 +41,7 @@ HeightMap::HeightMap HeightMap::HeightMap::MakeHeightMap(Tactics::Components::CO
 
 	// calculate width and height
 	unsigned int width, height;
-	float minX, minZ, maxX, maxZ;
+	float minX = INFINITY, minZ = INFINITY, maxX = 0.f, maxZ = 0.f;
 
 	for (auto const & vx : obj->vxData) {
 		if (vx.x < minX) minX = vx.x;
@@ -83,9 +83,14 @@ HeightMap::HeightMap HeightMap::HeightMap::MakeHeightMap(Tactics::Components::CO
 	// do drawing ////////////////////////////////////////////////////////////////////
 
 	// set up camera
-	auto pm = glm::ortho(minX, maxX, minZ, maxZ, -100.f, 1000.f);
-	pm = glm::rotate(pm, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
-	
+	//auto pm = glm::ortho(minX, maxX, minZ, maxZ, -100.f, 1000.f);
+	//pm = glm::rotate(pm, glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+	auto pm = glm::ortho(minX, maxX, -100.f, 1000.f, minZ, maxZ);
+
+	// look straight down
+	auto vm = glm::lookAt(glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 1.f));
+
+
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, obj->vxBufId);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
@@ -100,4 +105,6 @@ HeightMap::HeightMap HeightMap::HeightMap::MakeHeightMap(Tactics::Components::CO
 	// restore framebuffer
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, drawFboId);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, readFboId);
+
+	return HeightMap(width, height);
 }

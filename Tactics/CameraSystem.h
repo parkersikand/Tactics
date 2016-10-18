@@ -58,7 +58,8 @@ namespace Tactics {
 			ECS::Entity cameraE = getWorld()->entityFromHandle(currentCamera);
 			auto * location = cameraE.getComponent<Components::Position3D<> >();
 			auto * cameraInfo = cameraE.getComponent<Components::CameraComponent>();
-			return glm::lookAt(glm::vec3(location->x, location->y, location->z), cameraInfo->lookAt, glm::vec3(0, 1, 0));
+			//return glm::lookAt(glm::vec3(location->x, location->y, location->z), cameraInfo->lookAt, glm::vec3(0, 1, 0));
+			return glm::lookAt(glm::vec3(location->x, location->y, location->z), cameraInfo->lookAt, up);
 		}
 
 		float getZNear() { return zNear; }
@@ -66,11 +67,16 @@ namespace Tactics {
 		float getZFar() { return zFar; }
 		void setZFar(float f) { zFar = f; }
 
+		glm::vec3 getUp() { return up; }
+		void setUp(glm::vec3 u) { up = u; }
+
 	private:
 		ECS::EntityHdl currentCamera;
 		
 		float zNear = 0.1f;
 		float zFar = 1000.f;
+
+		glm::vec3 up = glm::vec3(0, 1, 0);
 	};
 
 } // namespace Tactics

@@ -5,12 +5,27 @@
 #include "BasicDrawSystem.h"
 #include "OBJLoader.h"
 #include "FBX.h"
+#include "CameraSystem.h"
 
 using namespace Tactics;
 using namespace Tactics::ECS;
 
 void TexturedCubeWorld::setup() {
 	Tactics::Worlds::BasicWorld::setup();
+
+	// load custom camera
+	
+	EntityHdl camera = newEntity();
+	auto * cameraPos = addComponent<Components::Position3D<>>(camera);
+	cameraPos->y = 5.f;
+	cameraPos->x = 1.f;
+	auto * cameraComp = addComponent<Components::CameraComponent>(camera);
+	//cameraComp->projectionType = cameraComp->ISOMETRIC;
+	cameraComp->lookAt = glm::vec3(0.0);
+	Tactics::Events::CameraChangedEvent cce;
+	cce.newCamera = camera;
+	ECS::EventDispatcher::postEvent(cce);
+	
 
 	// textured cube
 	EntityHdl cube = newEntity();

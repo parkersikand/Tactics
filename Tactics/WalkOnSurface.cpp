@@ -101,6 +101,7 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		auto * ray = getWorld()->addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		// cast ray straight down
 		ray->direction = glm::vec3(direction.x, -1.f, direction.y);
+		ray->up = glm::vec3(-1.f, 0, 0);
 
 		// make sure floor is a LineCollisionTarget
 		getWorld()->addComponent<LineCollision::Components::LineCollisionTarget>(floorHdl);
@@ -200,9 +201,9 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 // returns whether or not we can successfully move
 // must be called after setup
 bool Worlds::WalkOnSurfaceWorld::testStep1() {
-	auto originalPos = playerController->position;
+	auto originalPos = *playerController->position;
 	playerController->velocity.z = 0.1;
 	playerController->move(playerController->velocity);
-	auto newPos = playerController->position;
-	return originalPos->x != newPos->x || originalPos->y != newPos->y || originalPos->z != newPos->z;
+	auto newPos = *playerController->position;
+	return originalPos.x != newPos.x || originalPos.y != newPos.y || originalPos.z != newPos.z;
 }

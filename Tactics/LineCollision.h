@@ -18,6 +18,7 @@ namespace Tactics {
 				// How many hits to detect
 				int numHits = 1;
 				glm::vec3 direction;
+				glm::vec3 up = glm::vec3(0, 1.f, 0);
 			};
 			// Tag for an object that can be hit by a line
 			struct LineCollisionTarget : public ECS::Component {};

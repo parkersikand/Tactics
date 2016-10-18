@@ -102,7 +102,8 @@ void LineCollision::Systems::LineCollisionDetector::LineCollisionDraw(
 
 	glm::vec3 posv(pos.x, pos.y, pos.z);
 	auto lookat = posv + ray.direction;
-	glm::mat4 vm = glm::lookAt(posv, lookat, glm::vec3(0.f, 1.f, 0.f));
+//	glm::mat4 vm = glm::lookAt(posv, lookat, glm::vec3(0.f, 1.f, 0.f));
+	glm::mat4 vm = glm::lookAt(posv, lookat, ray.up);
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 
     // get z-values from camera system

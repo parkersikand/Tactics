@@ -85,6 +85,6 @@ std::string & quotedString(std::istream & in, std::string & str) {
 float lineNormalAngleRad(glm::vec3 line, glm::vec3 normal) {
 	auto normLine = glm::normalize(line);
 	auto normNormal = glm::normalize(normal);
-	return glm::asin(glm::length(glm::dot(line, normNormal)) / (glm::length(line) * glm::length(normNormal)));
+	return (glm::pi<float>() / 2) - glm::asin(glm::length(glm::dot(line, normNormal)) / (glm::length(line) * glm::length(normNormal)));
 }
 
