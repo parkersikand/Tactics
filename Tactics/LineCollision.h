@@ -45,6 +45,7 @@ namespace Tactics {
 					glm::vec4 color;
 					glm::vec3 normal;
 					float depth;
+					glm::vec3 position;
 				};
 
 				LineCollisionDetector();

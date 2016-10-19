@@ -43,7 +43,15 @@ out vec2 UV;
 // pass through normal
 out vec3 varyingNormal;
 
+// pass through position
+out vec4 VXpassthrough;
+
 void main() {
+    // pass through color & uv
+	vsColor = color;
+	UV = uv;
+	varyingNormal = normal;
+	VXpassthrough = vec4(vxPosition,1.f);
 
     mat4 pvm = projection_matrix * view_matrix * model_transform;
 
@@ -53,10 +61,7 @@ void main() {
 	//intensity = dot(lightDir, normal);
 	intensity = dot(lightDir, transformedNormal);
 
-	// pass through color & uv
-	vsColor = color;
-	UV = uv;
-	varyingNormal = normal;
+	
 
 	mat4 finalBone = mat4(1.0);
 

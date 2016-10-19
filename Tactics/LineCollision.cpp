@@ -420,6 +420,14 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	}
 	glClearErrors();
 
+	// Vertex position buffer
+	GLuint positionBuffer;
+	glGenRenderbuffers(1, &positionBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, positionBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, bufferAccuracy, bufferAccuracy);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_RENDERBUFFER, positionBuffer);
+
+	// Depth Buffer
 	GLuint depthBuffer;
 	glGenRenderbuffers(1, &depthBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
@@ -438,8 +446,8 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	}
 	glClearErrors();
 
-	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, drawBuffers);
+	GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, drawBuffers);
 
 #ifdef TESTING
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -477,6 +485,17 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	std::vector<std::uint8_t> dbgNormal(bufferAccuracy * bufferAccuracy * 4);
 	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGBA, GL_UNSIGNED_BYTE, &dbgNormal[0]);
 	auto dbgNormalPNGErr = lodepng::encode("LineCollider_NormalDebug.png", dbgNormal, bufferAccuracy, bufferAccuracy);
+#endif
+
+	// TODO make sure this can handle negative numbers
+	glm::vec4 centerPixelPosition;
+	glReadBuffer(GL_COLOR_ATTACHMENT2);
+	glReadPixels(bufferAccuracy / 2, bufferAccuracy / 2, 1, 1, GL_RGBA, GL_FLOAT, &centerPixelPosition);
+
+#ifdef TESTING
+	std::vector<float> dbgPosition(bufferAccuracy * bufferAccuracy * 4);
+	glReadPixels(0, 0, bufferAccuracy, bufferAccuracy, GL_RGBA, GL_FLOAT, &dbgPosition[0]);
+	//auto dbgPositionPNGerr = lodepng::encode("LineCollider_PositionDebug.png", )
 #endif
 
 	float depth;
@@ -527,6 +546,8 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	result.normal.z = centerPixelNormal[2] / 255;
 
 	result.depth = depth;
+
+	result.position = glm::vec3(centerPixelPosition);
 
 	return result;
 } // genericCast
