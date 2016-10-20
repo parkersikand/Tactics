@@ -38,7 +38,8 @@ World::~World() {
 		}
 		delete container[c];
 	}
-	delete mask_arr;
+
+	delete [] mask_arr;
 
 	for (unsigned int i = 0; i < managedSystems.size(); i++) {
 		if (managedSystems[i] != nullptr) delete managedSystems[i];
@@ -47,7 +48,11 @@ World::~World() {
 
 
 World::World() {
-	mask_arr = new ComponentMask[current_size];
+	//mask_arr = new ComponentMask[current_size];
+	mask_arr = new ComponentMask *[current_size];
+	for (unsigned int i = 0; i < current_size; i++) {
+		mask_arr[i] = new ComponentMask;
+	}
 	for (unsigned i = 0; i < MAX_COMPONENTS; i++) {
 		container[i] = new Component *[current_size];
 		for (unsigned cs = 0; cs < current_size; cs++) {
@@ -78,9 +83,30 @@ void World::addSystem(System & system) {
 
 
 EntityHdl World::addEntity(Entity & entity) {
-	EntityHdl hdl = idx;
-	idx++;
-	mask_arr[hdl] = entity.getMask();
+	//EntityHdl hdl = idx;
+	//idx++;
+	EntityHdl hdl = newEntity();
+	*mask_arr[hdl] = entity.getMask();
+	return hdl;
+}
+
+
+EntityHdl World::newEntity() {
+	if (reclaimPool.empty()) {
+		EntityHdl hdl = highwater;
+		highwater += 1;
+		return hdl;
+	}
+    // clear components and mask ( to be safe)
+	EntityHdl hdl = *reclaimPool.begin();
+	mask_arr[hdl]->clear();
+	for (unsigned int i = 0; i < ECS_MAX_COMPONENTS; i++) {
+		if (container[i][hdl]) {  // container[i] should always be valid
+			delete container[i][hdl];
+		}
+		container[i][hdl] = nullptr;
+	}
+	reclaimPool.erase(reclaimPool.begin());
 	return hdl;
 }
 
@@ -93,9 +119,16 @@ void World::removeEntity(EntityHdl hdl) {
 
 	// delete components
 	for (unsigned int i = 0; i < ECS_MAX_COMPONENTS; i++) {
-		auto * component = container[i][hdl];
+		Component * component = container[i][hdl];
 		if (component != nullptr) delete component;
 	}
+
+	// unset mask
+	mask_arr[hdl]->clear();
+
+	// add entity to reclaim pool
+	reclaimPool.insert(hdl);
+
 	current_size -= 1;
 	
 	// fire entity destroyed event

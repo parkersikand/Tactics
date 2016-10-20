@@ -68,6 +68,10 @@ namespace Tactics {
 
 			friend class MaskBuilder;
 			friend class ComponentManager;
+			friend class World;
+
+			void clear() { mask.reset(); }
+
 		};
 
 		class MaskBuilder {

@@ -405,7 +405,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	GLuint normalBuffer;
 	glGenRenderbuffers(1, &normalBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, normalBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, bufferAccuracy, bufferAccuracy);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA32F, bufferAccuracy, bufferAccuracy);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_RENDERBUFFER, normalBuffer);
 
 	// check for reading errors
@@ -424,7 +424,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	GLuint positionBuffer;
 	glGenRenderbuffers(1, &positionBuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, positionBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA4, bufferAccuracy, bufferAccuracy);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA32F, bufferAccuracy, bufferAccuracy);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_RENDERBUFFER, positionBuffer);
 
 	// Depth Buffer
@@ -532,6 +532,7 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 	glDeleteRenderbuffers(1, &colorBuffer);
 	glDeleteRenderbuffers(1, &normalBuffer);
 	glDeleteRenderbuffers(1, &depthBuffer);
+	glDeleteRenderbuffers(1, &positionBuffer);
 	glDeleteFramebuffers(1, &fbo);
 
 	Result result;

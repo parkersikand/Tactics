@@ -95,26 +95,27 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		// create linecast source
 		ECS::EntityHdl sourceHdl = getWorld()->newEntity();
 		auto * sourcePos = getWorld()->addComponent<Components::Position3D<>>(sourceHdl);
-		sourcePos->x = position->x;// +direction.x;
-		sourcePos->y = position->y;// +1.f;
-		sourcePos->z = position->z;// +direction.z;
+		sourcePos->x = position->x + direction.x;
+		sourcePos->y = position->y + 3.f;// +1.f;
+		sourcePos->z = position->z + direction.z;
 		auto * ray = getWorld()->addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		// cast ray straight down
-		ray->direction = glm::vec3(direction.x, -1.f, direction.y);
+		//ray->direction = glm::vec3(direction.x, -1.f, direction.z);
+		ray->direction = glm::vec3(0.f, -1.f, 0.f);
 		ray->up = glm::vec3(-1.f, 0, 0);
 
 		// make sure floor is a LineCollisionTarget
 		getWorld()->addComponent<LineCollision::Components::LineCollisionTarget>(floorHdl);
 
 		// get normal from linecast
-		auto normal = lcd.normal(sourceHdl, floorHdl);
+		auto result = lcd.castResult(sourceHdl, floorHdl);
 		
 		// if normal is 0, we are over the edge, dont move
-		if (normal == glm::vec3(0.f, 0.f, 0.f)) return;
+		if (result.normal == glm::vec3(0.f, 0.f, 0.f)) return;
 		
 		// check slope of normal
-		auto slope = lineNormalAngleRad(normal, glm::vec3(0.f, 1.f, 0.f));
-		if (slope > glm::radians(40.f)) { // too steep, dont move
+		auto slope = lineNormalAngleRad(result.normal, glm::vec3(0.f, 1.f, 0.f));
+		if (slope > glm::radians(60.f)) { // too steep, dont move
 			return;
 		}
 
@@ -123,9 +124,15 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		position->z += direction.z;
 		position->y += glm::length(direction) * (slope / (glm::pi<float>()/2));
 
+		// clean up the creatd entities
+		getWorld()->removeEntity(sourceHdl);
+
 	} // move
 
 	void update() {
+
+		//std::cout << position->x << "\t" << position->z << std::endl;
+
 		// update angles
 		upDownRad += upDownD;
 		leftRightRad += leftRightD;
@@ -136,8 +143,15 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		vec = glm::rotate(vec, leftRightRad, glm::vec3(0.f, 1.f, 0.f));
 		looking = vec;
 
+		glm::vec3 directedVelocity;
+		directedVelocity.x = sin(leftRightRad);
+		directedVelocity.z = cos(leftRightRad);
+		directedVelocity = glm::normalize(directedVelocity);
+		directedVelocity *= walkSpeed;
+
 		if (glm::length(velocity) > 0) {
-			move(velocity * walkSpeed);
+//			move(velocity * walkSpeed);
+			move(directedVelocity);
 		}
 		
 		// update camera
@@ -191,6 +205,9 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 	Components::Colored3DHelper::SingleColor(floorColor, floor3d, glm::vec3(0.6, 0.6, 0.6));
 	floorHdl = playerController->floorHdl;
 	addComponent<LineCollision::Components::LineCollisionTarget>(playerController->floorHdl);
+	auto * floorTransform = getComponent<Components::ModelTransform>(playerController->floorHdl);
+	//floorTransform->transform = glm::translate(glm::vec3(0, 5.f, 0));
+
 
 	// create updater system
 	auto * pcu = createManagedSystem<PlayerControllerUpdater>();
@@ -208,3 +225,4 @@ bool Worlds::WalkOnSurfaceWorld::testStep1() {
 	auto newPos = *playerController->position;
 	return originalPos.x != newPos.x || originalPos.y != newPos.y || originalPos.z != newPos.z;
 }
+

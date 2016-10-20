@@ -101,7 +101,7 @@ namespace Tactics {
 				Component ** ptr = &container[ComponentManager::getComponentId<T>()][hdl];
 				if (*ptr) delete (*ptr);
 				*ptr = new T(t);
-				mask_arr[hdl].set(ComponentManager::getComponentId<T>());
+				mask_arr[hdl]->set(ComponentManager::getComponentId<T>());
 				return static_cast<T*>(*ptr);
 			}
 
@@ -115,10 +115,13 @@ namespace Tactics {
 			}
 
 			// Return a handle to a new blank entity
-			EntityHdl newEntity() {
+			EntityHdl newEntity();
+			/*
+			{
 				idx++;
 				return idx - 1;
 			}
+			*/
 
 			template <typename EntityType>
 			EntityHdl newTypedEntity() {
@@ -129,8 +132,9 @@ namespace Tactics {
 			// Return handles that match this mask exactly
 			std::vector<EntityHdl> filterMaskExact(ComponentMask mask) {
 				std::vector<EntityHdl> out;
-				for (unsigned int i = 0; i < idx; i++) {
-					if (mask == mask_arr[i]) out.push_back(i);
+				//for (unsigned int i = 0; i < idx; i++) {
+				for (unsigned int i = 0; i < highwater; i++) {
+				    if (mask == *mask_arr[i]) out.push_back(i);
 				}
 				return out;
 			}
@@ -138,8 +142,9 @@ namespace Tactics {
 			// Return handles that have all required bits set
 			std::vector<EntityHdl> filterMaskIncludes(ComponentMask mask) {
 				std::vector<EntityHdl> out;
-				for (unsigned int i = 0; i < idx; i++) {
-					if (mask_arr[i].includes(mask)) out.push_back(i);
+				//for (unsigned int i = 0; i < idx; i++) {
+				for (unsigned int i = 0; i < highwater; i++) {
+					if ((*mask_arr[i]).includes(mask)) out.push_back(i);
 				}
 				return out;
 			}
@@ -148,14 +153,14 @@ namespace Tactics {
 			std::vector<Entity> entitiesFromHandles(std::vector<EntityHdl> handles) {
 				std::vector<Entity> es;
 				for (auto hdl : handles) {
-					es.push_back(Entity(this, &mask_arr[hdl], hdl));
+					es.push_back(Entity(this, mask_arr[hdl], hdl));
 				}
 				return es;
 			}
 
 			// Get one Entity
 			Entity entityFromHandle(EntityHdl hdl) {
-				return Entity(this, &mask_arr[hdl], hdl);
+				return Entity(this, mask_arr[hdl], hdl);
 			}
 
 			// register a system
@@ -213,7 +218,13 @@ namespace Tactics {
 			unsigned int current_size = starting_size;
 
 			// The index of the next available entity
-			unsigned int idx = 1;
+			//unsigned int idx = 1;
+
+			// high-water mark for entity handle
+			unsigned int highwater = 1;
+
+			// pool of EntityHdl's ready to be reclaimed
+			std::set<unsigned int> reclaimPool;
 
 			// TODO implement these
 			void resize();
@@ -221,7 +232,8 @@ namespace Tactics {
 			void shrink();
 
 			// dynamic array of masks
-			ComponentMask * mask_arr;
+			//ComponentMask * mask_arr;
+			ComponentMask **mask_arr;
 
 			// map of component keys to arrays of component pointers
 			// pointers are nullptr for entities without a certain component
