@@ -110,20 +110,14 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 
 		// get normal from linecast
 		auto result = lcd.castResult(sourceHdl, floorHdl);
-		
-		// if normal is 0, we are over the edge, dont move
-		if (result.normal == glm::vec3(0.f, 0.f, 0.f)) return;
-		
-		// check slope of normal
-		auto slope = lineNormalAngleRad(result.normal, glm::vec3(0.f, 1.f, 0.f));
-		if (slope > glm::radians(60.f)) { // too steep, dont move
-			return;
-		}
+
+		// check height difference
+		if (abs( (position->y - 1.f) - result.position.y) > 0.5f) return;
 
 		// we are good, update position
 		position->x += direction.x;
 		position->z += direction.z;
-		position->y += glm::length(direction) * (slope / (glm::pi<float>()/2));
+		position->y = 1.f + result.position.y;
 
 	} // move
 

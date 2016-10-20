@@ -28,8 +28,8 @@ vec4 shiftVec4(vec4 val) {
 
 void main() {
 
-//  outNormal = vec4(varyingNormal, 1.f);
-  outNormal = shiftVec4(vec4(varyingNormal, 1.f));
+  outNormal = vec4(varyingNormal, 1.f);
+//  outNormal = shiftVec4(vec4(varyingNormal, 1.f));
 
   outVertex = VXpassthrough;
 

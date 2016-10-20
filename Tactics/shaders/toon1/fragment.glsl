@@ -1,5 +1,9 @@
 #version 330 core
 
+// raw normal
+in vec3 varyingNormal;
+
+// computed intensity
 in float intensity;
 
 // Material info
@@ -95,4 +99,6 @@ void main() {
 	//if(intensity < 0.05) {
 	//  color = vec4(0,1.f,0,1.f);
 	//}
+	//vec3 vn = normalize(varyingNormal);
+	//color = vec4( (vn.r + 1) / 2.f, (vn.g + 1) / 2.f, (vn.b+1) / 2.f, 1.f);
 }
