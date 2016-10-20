@@ -29,6 +29,8 @@ Systems::BasicDrawSystem::BasicDrawSystem() {
 	useTextureU = glGetUniformLocation(programId, "useTexture");
 	textureHW = glGetUniformLocation(programId, "fragmentTextureSampler");
 	isSkeletalU = glGetUniformLocation(programId, "isSkeletal");
+	fogColorU = glGetUniformLocation(programId, "fogParams.fogColor");
+	fogDensityU = glGetUniformLocation(programId, "fogParams.fogDensity");
 
 	// generate batch buffers
 	glGenBuffers(1, &vxVBO);
@@ -160,6 +162,10 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 	glUniform3fv(hwLightDir, 1, &lightDir[0]);
 	glActiveTexture(GL_TEXTURE0); // set texture slot 0 as active
 	glUniform1ui(useTextureU, 0);
+
+	// send fog info
+	glUniform4fv(fogColorU, 1, &fogParams.fogColor[0]);
+	glUniform1f(fogDensityU, fogParams.fogDensity);
 
 	// draw batches
 	unsigned int i = 0;

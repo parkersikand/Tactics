@@ -9,6 +9,9 @@ in float intensity;
 // Material info
 in vec3 vsColor;
 
+// eye space certex
+in vec4 eyeSpaceVX;
+
 // UVs
 in vec2 UV;
 
@@ -19,6 +22,21 @@ uniform sampler2D fragmentTextureSampler;
 
 // use texture or color
 uniform bool useTexture;
+
+
+uniform struct FogParams {
+    vec4 fogColor;// = vec4 (0.f,0.f,0.f,0.f);
+	float fogDensity;// = 0.f;
+} fogParams;
+
+// functions /////////////////////////////////////////////
+
+
+float getFogFactor(FogParams params, float fogCoord) {
+  float fResult = exp(-params.fogDensity*fogCoord);
+  return 1.0-clamp(fResult, 0.0, 1.0);
+}
+
 
 vec3 rgb2hsl( in vec3 c ){
     float h = 0.0;
@@ -94,6 +112,10 @@ void main() {
 	//pastelizeHSL(colorHSL);
 	color = vec4(hsl2rgb(colorHSL), 1.0);
 
+	// TODO fog stuff
+	//float fFogCoord = abs(eyeSpaceVX.z/eyeSpaceVX.w); 
+    //color = mix(color, fogParams.fogColor, getFogFactor(fogParams, fFogCoord));
+
 	// debugging
 	//color = vec4(0,1.f,0,1.f);
 	//if(intensity < 0.05) {
@@ -101,4 +123,9 @@ void main() {
 	//}
 	//vec3 vn = normalize(varyingNormal);
 	//color = vec4( (vn.r + 1) / 2.f, (vn.g + 1) / 2.f, (vn.b+1) / 2.f, 1.f);
+
+	// check fog density
+	//if(fogParams.fogDensity < 0.01f) color = vec4(0.f,1.f,0.f,1.f);
+	// check fog coord
+	//if(fFogCoord > 1.f) color = vec4(0.f,1.f,0.f,1.f);
 }

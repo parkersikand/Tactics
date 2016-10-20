@@ -34,6 +34,16 @@ namespace Tactics {
 			// send SkeletalAnimation data to shaders
 			static void HandleSkeletal(Components::SkeletalAnimation * sa, GLuint programId, GLuint isSkeletalU = 0, unsigned int startLocation = 4);
 
+			struct FogParameters {
+				glm::vec4 fogColor = glm::vec4(0.7f,0.7f,0.7f,1.f);
+				float fogDensity = 0.04f;
+			};
+
+			glm::vec4 getFogColor() { return fogParams.fogColor; }
+			void setFogColor(glm::vec4 c) { fogParams.fogColor = c; }
+			float getFogDensity() { return fogParams.fogDensity; }
+			void setFogDensity(float d) { fogParams.fogDensity = d; }
+
 		private:
 
 			// a batch of objects for the basic draw system
@@ -71,6 +81,11 @@ namespace Tactics {
 
 			// batched VBOS
 			GLuint vxVBO, uvVBO, normVBO, colorVBO;
+
+			// fog uniforms
+			GLuint fogColorU, fogDensityU;
+
+			FogParameters fogParams;
 
 			// clear color
 			glm::vec4 clearColor = glm::vec4(0.f, 0.f, 0.4f, 0.f);

@@ -45,6 +45,8 @@ out vec3 varyingNormal;
 
 // pass through position
 out vec4 VXpassthrough;
+// pass through eyespace
+out vec4 eyeSpaceVX;
 
 void main() {
     // pass through color & uv
@@ -53,6 +55,8 @@ void main() {
 	varyingNormal = normal;
 	VXpassthrough = vec4(vxPosition,1.f);
 
+	mat4 modelView = view_matrix * model_transform;
+
     mat4 pvm = projection_matrix * view_matrix * model_transform;
 
     // we've defined our light in model space, so multiply the normals by the correct model transform matrix
@@ -60,8 +64,6 @@ void main() {
     
 	//intensity = dot(lightDir, normal);
 	intensity = dot(lightDir, transformedNormal);
-
-	
 
 	mat4 finalBone = mat4(1.0);
 
@@ -77,6 +79,7 @@ void main() {
 	}
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);
+	eyeSpaceVX = modelView * finalBone * vec4(vxPosition,1);
 
 	// debug
     //  gl_Position = pvm * vec4(vxPosition, 1);
