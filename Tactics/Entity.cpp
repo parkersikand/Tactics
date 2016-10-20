@@ -97,14 +97,16 @@ EntityHdl World::newEntity() {
 		highwater += 1;
 		return hdl;
 	}
-    // clear components and mask ( to be safe)
+    
 	EntityHdl hdl = *reclaimPool.begin();
+
+	// clear components and mask ( to be safe)
 	mask_arr[hdl]->clear();
 	for (unsigned int i = 0; i < ECS_MAX_COMPONENTS; i++) {
 		if (container[i][hdl]) {  // container[i] should always be valid
-			delete container[i][hdl];
+			delete container[i][hdl]; // TODO this should truly be deleted
+			container[i][hdl] = nullptr;
 		}
-		container[i][hdl] = nullptr;
 	}
 	reclaimPool.erase(reclaimPool.begin());
 	return hdl;
@@ -121,6 +123,7 @@ void World::removeEntity(EntityHdl hdl) {
 	for (unsigned int i = 0; i < ECS_MAX_COMPONENTS; i++) {
 		Component * component = container[i][hdl];
 		if (component != nullptr) delete component;
+		container[i][hdl] = nullptr;
 	}
 
 	// unset mask
@@ -156,6 +159,32 @@ void World::destroyManagedSystem(System * ptr) {
 		managedSystems.erase(it);
 	}
 	delete ptr;
+}
+
+
+void World::resize(size_t newsize) {
+	// create temporary
+	Component **tmp[ECS_MAX_COMPONENTS];
+	size_t h;
+	
+	for (unsigned int c = 0; c < ECS_MAX_COMPONENTS; c++) {
+		tmp[c] = new Component *[newsize];
+		for (h = 0; h < current_size; h++) {
+			tmp[c][h] = container[c][h];
+		}
+		for (; h < newsize; h++) {
+			tmp[c][h] = nullptr;
+		}
+		// assign pointer to new array to container
+		container[c] = tmp[c];
+	}
+	
+	current_size = newsize;
+}
+
+
+void World::grow() {
+	resize(current_size + 1000);
 }
 
 

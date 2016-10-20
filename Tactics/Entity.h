@@ -116,12 +116,6 @@ namespace Tactics {
 
 			// Return a handle to a new blank entity
 			EntityHdl newEntity();
-			/*
-			{
-				idx++;
-				return idx - 1;
-			}
-			*/
 
 			template <typename EntityType>
 			EntityHdl newTypedEntity() {
@@ -227,7 +221,7 @@ namespace Tactics {
 			std::set<unsigned int> reclaimPool;
 
 			// TODO implement these
-			void resize();
+			void resize(size_t);
 			void grow();
 			void shrink();
 

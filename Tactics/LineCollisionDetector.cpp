@@ -1,5 +1,9 @@
 #ifdef TESTING
 
+//#define LINECOL_TESTS
+
+#ifdef LINECOL_TESTS
+
 #include <gtest/gtest.h>
 
 #include "LineCollision.h"
@@ -116,5 +120,7 @@ TEST(LineCollision, line_collision_result) {
 	world.setup();
 	ASSERT_TRUE(world.testResult());
 }
+
+#endif
 
 #endif

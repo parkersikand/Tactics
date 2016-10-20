@@ -1,5 +1,8 @@
 #ifdef TESTING
 
+//#define WALK_ON_SURFACE_TESTS
+
+#ifdef WALK_ON_SURFACE_TESTS
 
 #include "WalkOnSurface.h"
 #include "DrawLoop.h"
@@ -78,6 +81,6 @@ TEST(WalkOnSurface, Step1) {
 }
 
 
-
+#endif
 
 #endif

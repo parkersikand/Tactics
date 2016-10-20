@@ -91,4 +91,16 @@ TEST(World, filter_mask_includes) {
 	ASSERT_EQ(check, enames);
 }
 
+TEST(World, add_remove_add_entity) {
+	World world;
+	EntityHdl entity = world.newEntity();
+	auto * name = world.addComponent<NameComponent>(entity);
+	name->name = "One";
+	world.removeEntity(entity);
+	EntityHdl e2 = world.newEntity();
+	name = world.addComponent<NameComponent>(e2);
+	name->name = "Two";
+	ASSERT_EQ(name->name, "Two");
+}
+
 #endif
