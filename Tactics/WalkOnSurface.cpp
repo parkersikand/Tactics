@@ -88,19 +88,20 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 
 	LineCollision::Systems::LineCollisionDetector lcd;
 
+
+	ECS::EntityHdl sourceHdl;
 	void move(glm::vec3 direction) {
 		// set direction y to 0
 		direction.y = 0;
 		
 		// create linecast source
-		ECS::EntityHdl sourceHdl = getWorld()->newEntity();
-		auto * sourcePos = getWorld()->addComponent<Components::Position3D<>>(sourceHdl);
+		auto * sourcePos = getWorld()->getComponent<Components::Position3D<>>(sourceHdl);
 		sourcePos->x = position->x + direction.x;
 		sourcePos->y = position->y + 3.f;// +1.f;
 		sourcePos->z = position->z + direction.z;
-		auto * ray = getWorld()->addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
+		
 		// cast ray straight down
-		//ray->direction = glm::vec3(direction.x, -1.f, direction.z);
+		auto * ray = getWorld()->getComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
 		ray->direction = glm::vec3(0.f, -1.f, 0.f);
 		ray->up = glm::vec3(-1.f, 0, 0);
 
@@ -123,9 +124,6 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		position->x += direction.x;
 		position->z += direction.z;
 		position->y += glm::length(direction) * (slope / (glm::pi<float>()/2));
-
-		// clean up the creatd entities
-		getWorld()->removeEntity(sourceHdl);
 
 	} // move
 
@@ -160,6 +158,13 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 		cce.newCamera = playerHdl;
 		ECS::EventDispatcher::postEvent(cce);
 	} // update
+
+	// perform setup upon registration
+	void onRegister(World &) {
+		sourceHdl = getWorld()->newEntity();
+		getWorld()->addComponent<Components::Position3D<>>(sourceHdl);
+		getWorld()->addComponent<LineCollision::Components::LineCollisionRay>(sourceHdl);
+	}
 
 }; // PlayerController
 
