@@ -87,7 +87,7 @@ void TexturedCubeWorld::setup() {
 	EntityHdl cube5 = newEntity();
 	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(cube5);
 	auto * cube5_3d = getComponent<Components::CObject3D>(cube5);
-	LoadMesh(cube5_3d, "assets/models/correctCube.fbx");
+	LoadMesh(cube5_3d, "assets/models/correctCube.obj");
 	cube5_3d->texId = cube3d->texId;
 	auto * cube5pos = addComponent<Components::Position3D<>>(cube5);
 	cube5pos->x = -2.f;
