@@ -219,6 +219,9 @@
     <ClCompile Include="HeightMap.cpp">
       <Filter>Source Files\Concepts</Filter>
     </ClCompile>
+    <ClCompile Include="assimp_loader.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -390,6 +393,9 @@
     </ClInclude>
     <ClInclude Include="HeightMap.h">
       <Filter>Header Files\Concepts</Filter>
+    </ClInclude>
+    <ClInclude Include="assimp_loader.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

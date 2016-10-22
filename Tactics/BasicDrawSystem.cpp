@@ -250,6 +250,7 @@ void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimation * sa
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, sa->vertexBoneInfoVBO);
+	/*
 	unsigned int offset = 0;
 	for (unsigned int i = startLocation, offset = 0; i < 4; i++, offset++) {
 		glEnableVertexAttribArray(i);
@@ -259,7 +260,8 @@ void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimation * sa
 		glEnableVertexAttribArray(i);
 		glVertexAttribPointer(i, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)offset);
 	}
-	/*
+	*/
+	
 	glEnableVertexAttribArray(4);
 	glVertexAttribIPointer(4, 1, GL_UNSIGNED_INT, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)0);
 	glEnableVertexAttribArray(5);
@@ -277,7 +279,7 @@ void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimation * sa
 	glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)12);
 	glEnableVertexAttribArray(11);
 	glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(Components::SkeletalAnimation::VertexBoneInfo), (void *)16);
-	*/
+	
 }
 
 // draw unbatched objects

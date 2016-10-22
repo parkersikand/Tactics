@@ -75,7 +75,7 @@ void main() {
 	    finalBone *= (object_bones[boneIds[2]] * boneWeights[2]);
 	  if(boneWeights[3] > 0)
 	    finalBone *= (object_bones[boneIds[3]] * boneWeights[3]);
-	  //vsColor = vec3(0.f,1.f,0.f);
+	  vsColor = vec3(0.f,1.f,0.f);
 	}
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);

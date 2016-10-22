@@ -6,6 +6,7 @@
 #include "OBJLoader.h"
 #include "FBX.h"
 #include "CameraSystem.h"
+#include "assimp_loader.h"
 
 using namespace Tactics;
 using namespace Tactics::ECS;
@@ -17,8 +18,9 @@ void TexturedCubeWorld::setup() {
 	
 	EntityHdl camera = newEntity();
 	auto * cameraPos = addComponent<Components::Position3D<>>(camera);
-	cameraPos->y = 5.f;
-	cameraPos->x = 1.f;
+	cameraPos->y = 20.f;
+	cameraPos->x = 20.f;
+	cameraPos->z = 20.f;
 	auto * cameraComp = addComponent<Components::CameraComponent>(camera);
 	//cameraComp->projectionType = cameraComp->ISOMETRIC;
 	cameraComp->lookAt = glm::vec3(0.0);
@@ -54,4 +56,41 @@ void TexturedCubeWorld::setup() {
 	cube2_pos->x = 2.f;
 	cube2_pos->y = 0.f;
 	cube2_pos->z = 2.f;
+
+	// third cube, rotated 90 on  x
+	EntityHdl cube3 = newEntity();
+	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(cube3);
+	auto * cube3_3d = getComponent<Components::CObject3D>(cube3);
+	Util::FBX::LoadMesh("assets/models/correctCube.fbx", cube3_3d, true);
+	cube3_3d->texId = cube3d->texId;
+	auto * cube3pos = addComponent<Components::Position3D<>>(cube3);
+	cube3pos->x = 4.f;
+	cube3pos->z = 4.f;
+	auto * cube3_transform = getComponent<Components::ModelTransform>(cube3);
+	cube3_transform->transform = glm::rotate(glm::mat4(1.f), glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f));
+
+
+	// fourth cube, rotated 90 on x, then 90 on z
+	EntityHdl cube4 = newEntity();
+	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(cube4);
+	auto * cube4_3d = getComponent<Components::CObject3D>(cube4);
+	Util::FBX::LoadMesh("assets/models/correctCube.fbx", cube4_3d, true);
+	cube4_3d->texId = cube3d->texId;
+	auto * cube4pos = addComponent<Components::Position3D<>>(cube4);
+	cube4pos->x = 4.f;
+	cube4pos->z = 6.f;
+	auto * cube4_transform = getComponent<Components::ModelTransform>(cube4);
+	cube4_transform->transform = 
+		glm::rotate(glm::rotate(glm::mat4(1.f), glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f)), glm::radians(90.f), glm::vec3(0.f,0.f,1.f));
+
+	// load a cube with assimp
+	EntityHdl cube5 = newEntity();
+	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(cube5);
+	auto * cube5_3d = getComponent<Components::CObject3D>(cube5);
+	LoadMesh(cube5_3d, "assets/models/correctCube.fbx");
+	cube5_3d->texId = cube3d->texId;
+	auto * cube5pos = addComponent<Components::Position3D<>>(cube5);
+	cube5pos->x = -2.f;
+	cube5pos->z = -2.f;
+
 }

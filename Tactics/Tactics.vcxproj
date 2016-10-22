@@ -111,13 +111,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\gtest-1.7.0\include;C:\ogl-OpenGL-tutorial_0015_33\external\glm-0.9.7.1\glm;C:\ogl-OpenGL-tutorial_0015_33\external\glfw-3.1.2\include;C:\ogl-OpenGL-tutorial_0015_33\external\glew-1.13.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\assimp-master\assimp-master\include;C:\gtest-1.7.0\include;C:\ogl-OpenGL-tutorial_0015_33\external\glm-0.9.7.1\glm;C:\ogl-OpenGL-tutorial_0015_33\external\glfw-3.1.2\include;C:\ogl-OpenGL-tutorial_0015_33\external\glew-1.13.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;TW_STATIC;TW_NO_LIB_PRAGMA;TW_NO_DIRECT3D;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;TACTICS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glu32.lib;opengl32.lib;external\glfw-3.1.2\src\Debug\glfw3.lib;external\Debug\GLEW_1130.lib;gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\Tactics\external\lib;C:\ogl-OpenGL-tutorial_0015_33\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glu32.lib;opengl32.lib;external\glfw-3.1.2\src\Debug\glfw3.lib;external\Debug\GLEW_1130.lib;gtestd.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\Tactics\external\lib;C:\dev\assimp-master\assimp-master\build\code\Debug;C:\ogl-OpenGL-tutorial_0015_33\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|Win32'">
@@ -139,13 +139,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\gtest-1.7.0\include;C:\ogl-OpenGL-tutorial_0015_33\external\glm-0.9.7.1\glm;C:\ogl-OpenGL-tutorial_0015_33\external\glfw-3.1.2\include;C:\ogl-OpenGL-tutorial_0015_33\external\glew-1.13.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\assimp-master\assimp-master\include;C:\gtest-1.7.0\include;C:\ogl-OpenGL-tutorial_0015_33\external\glm-0.9.7.1\glm;C:\ogl-OpenGL-tutorial_0015_33\external\glfw-3.1.2\include;C:\ogl-OpenGL-tutorial_0015_33\external\glew-1.13.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;TW_STATIC;TW_NO_LIB_PRAGMA;TW_NO_DIRECT3D;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;TACTICS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glu32.lib;opengl32.lib;external\glfw-3.1.2\src\Debug\glfw3.lib;external\Debug\GLEW_1130.lib;gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\dev\Tactics\external\lib;C:\ogl-OpenGL-tutorial_0015_33\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;glu32.lib;opengl32.lib;external\glfw-3.1.2\src\Debug\glfw3.lib;external\Debug\GLEW_1130.lib;gtestd.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\Tactics\external\lib;C:\dev\assimp-master\assimp-master\build\code\Debug;C:\ogl-OpenGL-tutorial_0015_33\build;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
@@ -195,6 +195,7 @@
   <ItemGroup>
     <ClCompile Include="AnimatedCubeWorld.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="assimp_loader.cpp" />
     <ClCompile Include="BasicDrawSystem.cpp" />
     <ClCompile Include="BasicWorld.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AnimatedCubeWorld.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="assimp_loader.h" />
     <ClInclude Include="BasicDrawSystem.h" />
     <ClInclude Include="ColoredDrawSystem.h" />
     <ClInclude Include="BasicWorld.h" />
