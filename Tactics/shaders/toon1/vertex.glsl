@@ -85,7 +85,7 @@ void main() {
 	}
 
 	//intensity;
-	intensity = dot(lightDir, mat3(ti_model_transform) * finalBoneIT * normal);
+	intensity = dot(lightDir, normalize(mat3(ti_model_transform) * finalBoneIT * normal));
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);
 	eyeSpaceVX = modelView * finalBone * vec4(vxPosition,1);
