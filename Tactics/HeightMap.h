@@ -18,8 +18,8 @@ namespace Tactics {
 
 			void writeFile(const char * filename);
 
-			float getWidth() { return width; }
-			float getHeight() { return height; }
+			float getWidth() { return 1.f * width; }
+			float getHeight() { return 1.f * height; }
 
 			float get(unsigned int x, unsigned int y);
 			float getInterpolated(float x, float y);

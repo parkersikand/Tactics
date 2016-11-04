@@ -14,9 +14,6 @@ using namespace Tactics;
 using namespace Tactics::ECS;
 
 // a simple key handler to move the camera
-//struct Worlds::BasicWorld::CameraKeyHandler : public Tactics::Systems::KeyInputSystem, 
-//	public virtual Tactics::ECS::EventHandler<Tactics::Events::ScrollEvent> {
-
 	void Worlds::BasicWorld::CameraKeyHandler::handle(const Tactics::Events::ScrollEvent & se) {
 		//std::cout << "Scroll" << std::endl;
 		World & world = *getWorld();
@@ -88,9 +85,6 @@ using namespace Tactics::ECS;
 		ECS::EventDispatcher::postEvent(cce);
 	}
 
-	
-//}; // CameraKeyHandler
-
 
 void Tactics::Worlds::BasicWorld::setup() {
 	// add systems
@@ -114,6 +108,7 @@ void Tactics::Worlds::BasicWorld::setup() {
 	Events::CameraChangedEvent cce;
 	cce.newCamera = camera;
 	EventDispatcher::postEvent(cce);
+	cameraHdl = camera;
 
 	// add our key handler to update the camera
 	//CameraKeyHandler ckh;
@@ -123,6 +118,26 @@ void Tactics::Worlds::BasicWorld::setup() {
 	ECS::EventDispatcher::registerEventHandler<Events::KeyRepeat>(*cameraKeyHandler);
 	ECS::EventDispatcher::registerEventHandler<Events::ScrollEvent>(*cameraKeyHandler);
 	//registerSystem(ckh);
+}
+
+
+void Tactics::Worlds::BasicWorld::setCamera(glm::vec3 pos, glm::vec3 lookAt) {
+	setCamera(pos, lookAt, glm::vec3(0.f, 1.f, 0.f));
+}
+
+void Tactics::Worlds::BasicWorld::setCamera(glm::vec3 pos, glm::vec3 lookAt, glm::vec3 up) {
+	auto camera = getCamera();
+	Components::CameraComponent * cameraComponent = getComponent<Components::CameraComponent>(camera);
+	cameraComponent->lookAt = glm::vec3(0.f, 0.f, 0.f);
+	cameraComponent->projectionType = cameraComponent->PERSPECTIVE;
+	//	cameraComponent->projectionType = cameraComponent->ISOMETRIC;
+	Components::Position3D<> * cameraPos = getComponent<Components::Position3D<> >(camera);
+	cameraPos->x = pos.x;
+	cameraPos->y = pos.y;
+	cameraPos->z = pos.z;
+	Events::CameraChangedEvent cce;
+	cce.newCamera = camera;
+	EventDispatcher::postEvent(cce);
 }
 
 

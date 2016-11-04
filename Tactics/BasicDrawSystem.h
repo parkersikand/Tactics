@@ -32,7 +32,7 @@ namespace Tactics {
 			glm::vec4 getClearColor() { return clearColor; }
 
 			// send SkeletalAnimation data to shaders
-			static void HandleSkeletal(Components::SkeletalAnimation * sa, GLuint programId, GLuint isSkeletalU = 0, unsigned int startLocation = 4);
+			void HandleSkeletal(Components::SkeletalAnimation * sa, unsigned int startLocation = 0);
 
 			struct FogParameters {
 				glm::vec4 fogColor = glm::vec4(0.7f,0.7f,0.7f,1.f);
@@ -43,6 +43,8 @@ namespace Tactics {
 			void setFogColor(glm::vec4 c) { fogParams.fogColor = c; }
 			float getFogDensity() { return fogParams.fogDensity; }
 			void setFogDensity(float d) { fogParams.fogDensity = d; }
+
+			void drawMulti(ECS::EntityHdl);
 
 		private:
 
@@ -86,6 +88,10 @@ namespace Tactics {
 			GLuint fogColorU, fogDensityU;
 
 			FogParameters fogParams;
+
+			// bone uniforms
+			GLuint boneU[64];
+			GLuint boneITU[64];
 
 			// clear color
 			glm::vec4 clearColor = glm::vec4(0.f, 0.f, 0.4f, 0.f);

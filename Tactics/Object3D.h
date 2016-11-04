@@ -38,6 +38,11 @@ namespace Tactics {
 			unsigned int drawMode = GL_TRIANGLES;
 		};
 
+		struct MultiObject3D : public ECS::Component {
+			std::vector<CObject3D> objects;
+			std::vector<unsigned int> offsets;
+		};
+
 		struct CObject3DHelper {
 			static void setVertexData(CObject3D *, std::vector<glm::vec3> &);
 			static void setUVData(CObject3D *, std::vector<glm::vec2> &);

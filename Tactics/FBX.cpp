@@ -509,7 +509,7 @@ bool Tactics::Util::FBX::LoadSkeletalAnimation(const char * filename, Tactics::C
 	sa->hierarchy = bone_hierarchy;
 
 	// set armature rotation
-	sa->armatureRotation = name_bones["Armature"].rotation;
+//	sa->armatureRotation = name_bones["Armature"].rotation;
 
 	// copy data to GPU
 	glGenBuffers(1, &sa->vertexBoneInfoVBO);

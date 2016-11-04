@@ -10,13 +10,12 @@ layout(location = 2) in vec3 normal;
 layout(location = 3) in vec3 color;
 
 // per vertex bone info
-layout(location = 4) in uint[MAX_BONES] boneIds; // gets locations 4,5,6,7
-layout(location = 8) in float[MAX_BONES] boneWeights; // 8,9,10,11
+layout(location = 4) in ivec4 boneIds;
+layout(location = 5) in vec4 boneWeights;
 
-// object bones
-uniform mat4[32] object_bones;
-// current bone transform
-uniform mat4[32] bone_transforms;
+// bones with transformation
+uniform mat4[64] bones;
+uniform mat3[64] bonesIT;
 
 // Material info
 uniform vec3 diffuse;
@@ -62,21 +61,31 @@ void main() {
     // we've defined our light in model space, so multiply the normals by the correct model transform matrix
 	vec3 transformedNormal = normalize(ti_model_transform * vec4(normal,0)).xyz;
     
-	//intensity = dot(lightDir, normal);
-	intensity = dot(lightDir, transformedNormal);
+	
 
-	mat4 finalBone = mat4(1.0);
+	mat4 finalBone = mat4(0.0);
+	mat3 finalBoneIT = mat3(0.0);
 
 	if (isSkeletal) {
-	  finalBone *= (object_bones[boneIds[0]] * bone_transforms[boneIds[0]] * boneWeights[0]);
-	  if(boneWeights[1] > 0)
-	    finalBone *= (object_bones[boneIds[1]] * boneWeights[1]); 
-	  if(boneWeights[2] > 0)
-	    finalBone *= (object_bones[boneIds[2]] * boneWeights[2]);
-	  if(boneWeights[3] > 0)
-	    finalBone *= (object_bones[boneIds[3]] * boneWeights[3]);
-	  vsColor = vec3(0.f,1.f,0.f);
+	  //vsColor = vec3(0.f,1.f,0.f);
+
+	  finalBone = bones[boneIds[0]] * boneWeights[0];
+	  finalBone += bones[boneIds[1]] * boneWeights[1];
+	  finalBone += bones[boneIds[2]] * boneWeights[2];
+	  finalBone += bones[boneIds[3]] * boneWeights[3];
+
+	  finalBoneIT = bonesIT[boneIds[0]] * boneWeights[0];
+	  finalBoneIT += bonesIT[boneIds[1]] * boneWeights[1];
+	  finalBoneIT += bonesIT[boneIds[2]] * boneWeights[2];
+	  finalBoneIT += bonesIT[boneIds[3]] * boneWeights[3];
+
+	} else {
+	  finalBone = mat4(1.f);
+	  finalBoneIT = mat3(1.f);
 	}
+
+	//intensity;
+	intensity = dot(lightDir, mat3(ti_model_transform) * finalBoneIT * normal);
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);
 	eyeSpaceVX = modelView * finalBone * vec4(vxPosition,1);

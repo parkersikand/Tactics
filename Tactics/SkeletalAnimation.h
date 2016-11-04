@@ -10,6 +10,11 @@
 #include "Component.h"
 #include "glm.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+
+#include <ogldev_math_3d.h>
+
 namespace Tactics {
 
 	namespace SkeletalAnimation {
@@ -41,12 +46,30 @@ namespace Tactics {
 
 			std::map<std::string, std::vector<std::string>> hierarchy;
 			std::map<std::string, unsigned int> name_id; // map of names to ids
-			std::vector<Tactics::SkeletalAnimation::Bone> bones; // default bone info
+			std::vector<Tactics::SkeletalAnimation::Bone> bones; // static bone info
+			std::vector<glm::mat4> bone_transforms; // final transformations for each bone
+			glm::mat4 globalInverseTransform;
 
-			glm::mat4 armatureRotation; // local rotation of armature object. can be used to correct axes
+			//glm::mat4 armatureRotation; // local rotation of armature object. can be used to correct axes
+			const aiScene * pscene;
+
+			// store reference to importer to manage scope
+			Assimp::Importer importer;
 
 			int tick_ms = 30; // duration of one frame
 			double anim_start = 0; // starting time of current animation
+
+			void ReadNodeHeirarchy(float time, const aiNode * node, glm::mat4 parentTransform);
+			void ReadNodeHeirarchyDebug(float time, const aiNode * node, Matrix4f ParentTransform, std::vector<glm::mat4> &);
+
+			// debugging values
+			std::vector<Matrix4f> debug_bones;
+			std::vector<Matrix4f> debug_transforms;
+			Matrix4f globalInverseTransformM4;
+
+			// compute final bone transforms
+			void BoneTransforms(float time);
+			glm::mat4 BoneTransformsDebug(float time);
 
 		private:
 

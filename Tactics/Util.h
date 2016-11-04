@@ -8,6 +8,8 @@
 
 #include "Object3D.h"
 
+#include <ogldev_math_3d.h>
+
 #include <vector>
 #include <iostream>
 
@@ -28,5 +30,19 @@ float linePlaneAngleRad(glm::vec3 line, glm::vec3 plane);
 
 // compute angle between line and normal of plane
 float lineNormalAngleRad(glm::vec3 line, glm::vec3 normal);
+
+// compare equality of floats
+bool eqf(float, float);
+
+// print Matrix4f
+ostream & operator<<(ostream & out, const Matrix4f & m);
+
+// convert Matrix4f to glm::mat4
+glm::mat4 Matrix4f2mat4(Matrix4f mat);
+
+
+// check equivalence of Matrix4f and glm::mat4
+bool mateq(Matrix4f, glm::mat4);
+
 
 #endif

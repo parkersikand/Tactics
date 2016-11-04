@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
 	// initialize OpenGL
 	if (!glfwInit()) {
 		fprintf(stderr, "Failed to initialize GLFW\n");
+		std::cout << "Tests complete. Press enter to exit... ";
 		char wait = getchar();
 		return -1;
 	}

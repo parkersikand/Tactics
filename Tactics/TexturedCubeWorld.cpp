@@ -83,6 +83,7 @@ void TexturedCubeWorld::setup() {
 	cube4_transform->transform = 
 		glm::rotate(glm::rotate(glm::mat4(1.f), glm::radians(90.f), glm::vec3(1.f, 0.f, 0.f)), glm::radians(90.f), glm::vec3(0.f,0.f,1.f));
 
+
 	// load a cube with assimp
 	EntityHdl cube5 = newEntity();
 	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(cube5);

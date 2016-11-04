@@ -537,14 +537,14 @@ LineCollision::Systems::LineCollisionDetector::genericCast(ECS::EntityHdl source
 
 	Result result;
 	
-	result.color.r = centerPixelColor[0] / 255;
-	result.color.g = centerPixelColor[1] / 255;
-	result.color.b = centerPixelColor[2] / 255;
-	result.color.a = centerPixelColor[3] / 255;
+	result.color.r = centerPixelColor[0] / 255.f;
+	result.color.g = centerPixelColor[1] / 255.f;
+	result.color.b = centerPixelColor[2] / 255.f;
+	result.color.a = centerPixelColor[3] / 255.f;
 
-	result.normal.x = centerPixelNormal[0] / 255;
-	result.normal.y = centerPixelNormal[1] / 255;
-	result.normal.z = centerPixelNormal[2] / 255;
+	result.normal.x = centerPixelNormal[0] / 255.f;
+	result.normal.y = centerPixelNormal[1] / 255.f;
+	result.normal.z = centerPixelNormal[2] / 255.f;
 
 	result.depth = depth;
 

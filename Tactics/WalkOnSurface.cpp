@@ -21,8 +21,8 @@ struct Worlds::WalkOnSurfaceWorld::PlayerController :
 	public Tactics::Systems::KeyInputSystem 
 {
 
-	float mult = 0.00005;
-	float walkSpeed = 0.1;
+	float mult = 0.00005f;
+	float walkSpeed = 0.1f;
 	float leftRightD = 0.f;
 	float upDownD = 0.f;
 
@@ -219,7 +219,7 @@ void Worlds::WalkOnSurfaceWorld::setup() {
 // must be called after setup
 bool Worlds::WalkOnSurfaceWorld::testStep1() {
 	auto originalPos = *playerController->position;
-	playerController->velocity.z = 0.1;
+	playerController->velocity.z = 0.1f;
 	playerController->move(playerController->velocity);
 	auto newPos = *playerController->position;
 	return originalPos.x != newPos.x || originalPos.y != newPos.y || originalPos.z != newPos.z;

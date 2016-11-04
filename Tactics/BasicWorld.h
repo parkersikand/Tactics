@@ -8,6 +8,8 @@
 #include "WindowManager.h"
 #include "KeyInputSystem.h"
 
+#include <glm.hpp>
+
 namespace Tactics {
 
 	namespace Worlds {
@@ -37,6 +39,12 @@ namespace Tactics {
 			// get the window
 			GLFWwindow * getWindow();
 
+			void setCamera(glm::vec3 position, glm::vec3 lookAt);
+
+			void setCamera(glm::vec3 position, glm::vec3 lookAt, glm::vec3 up);
+
+			ECS::EntityHdl getCamera() { return cameraHdl; };
+
 			// disable camera key handler
 			void unregisterCameraKeyHandler();
 
@@ -45,6 +53,8 @@ namespace Tactics {
 		private:
 			WindowManager * windowManager;
 			CameraKeyHandler * cameraKeyHandler;
+
+			ECS::EntityHdl cameraHdl;
 		};
 
 	}

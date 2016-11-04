@@ -10,8 +10,8 @@
 //#include "AnimatedCubeWorld.h"
 //class MainWorld : public AnimatedCubeWorld {};
 
-#include "TexturedCubeWorld.h"
-class MainWorld : public TexturedCubeWorld {};
+//#include "TexturedCubeWorld.h"
+//class MainWorld : public TexturedCubeWorld {};
 
 //#include "WalkOnSurface.h"
 //class MainWorld : public Tactics::Worlds::WalkOnSurfaceWorld {};
@@ -21,3 +21,6 @@ class MainWorld : public TexturedCubeWorld {};
 
 //#include "SpinningSuzanne.h"
 //class MainWorld : public Tactics::Worlds::SpinningSuzanneWorld {};
+
+#include "BobLamp.h"
+class MainWorld : public BobLampWorld {};

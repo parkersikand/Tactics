@@ -107,7 +107,7 @@ void main() {
 	  colorHSL = rgb2hsl(vsColor);
 	}
     
-	colorHSL.z *= max(0.1, intensity);
+	colorHSL.z *= max(0.1, min(1.0, intensity));
 	//toonifyColorHSL(colorHSL);
 	//pastelizeHSL(colorHSL);
 	color = vec4(hsl2rgb(colorHSL), 1.0);
@@ -118,9 +118,11 @@ void main() {
 
 	// debugging
 	//color = vec4(0,1.f,0,1.f);
-	//if(intensity < 0.05) {
-	//  color = vec4(0,1.f,0,1.f);
-	//}
+	if(intensity < 1) {
+	  //color = vec4(0,1.f,0,1.f);
+	} else {
+	  //color = vec4(1.f,0,0,1.f);
+	}
 	//vec3 vn = normalize(varyingNormal);
 	//color = vec4( (vn.r + 1) / 2.f, (vn.g + 1) / 2.f, (vn.b+1) / 2.f, 1.f);
 

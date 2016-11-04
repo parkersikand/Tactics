@@ -94,6 +94,12 @@
     <Filter Include="Resource Files\shaders\heightmap">
       <UniqueIdentifier>{5ed6c6f9-313e-4961-8efe-a632253d516f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ogldev">
+      <UniqueIdentifier>{da0a2b29-d3ef-4377-b7a4-59404d88eebd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ogldev">
+      <UniqueIdentifier>{e183a697-7c03-4837-95a0-bee36b64fe96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -222,6 +228,54 @@
     <ClCompile Include="assimp_loader.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="BobLamp.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletalDebug.cpp">
+      <Filter>Source Files\Tests\concepts</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\camera.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\cubemap_texture.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\io_buffer.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\math_3d.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_app.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_backend.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_basic_lighting.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_basic_mesh.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_shadow_map_fbo.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_skinned_mesh.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_texture.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\ogldev_util.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\random_texture.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
+    <ClCompile Include="ogldev\technique.cpp">
+      <Filter>Source Files\ogldev</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -231,9 +285,6 @@
       <Filter>Resource Files\shaders\simple</Filter>
     </None>
     <None Include="shaders\toon1\fragment.glsl">
-      <Filter>Resource Files\shaders\toon1</Filter>
-    </None>
-    <None Include="shaders\toon1\vertex.glsl">
       <Filter>Resource Files\shaders\toon1</Filter>
     </None>
     <None Include="shaders\ray\fragment.glsl">
@@ -253,6 +304,9 @@
     </None>
     <None Include="shaders\heightmap\vertex.glsl">
       <Filter>Resource Files\shaders\heightmap</Filter>
+    </None>
+    <None Include="shaders\toon1\vertex.glsl">
+      <Filter>Resource Files\shaders\toon1</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -396,6 +450,78 @@
     </ClInclude>
     <ClInclude Include="assimp_loader.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="BobLamp.h">
+      <Filter>Header Files\Worlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\glfx.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_app.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_backend.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_basic_lighting.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_basic_mesh.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_callbacks.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_camera.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_cubemap_texture.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_engine_common.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_glfw_backend.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_glut_backend.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_io_buffer.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_keys.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_lights_common.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_math_3d.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_pipeline.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_random_texture.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_shadow_map_fbo.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_skinned_mesh.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_texture.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_types.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\ogldev_util.h">
+      <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="..\external\include\technique.h">
+      <Filter>Header Files\ogldev</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
