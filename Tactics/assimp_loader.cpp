@@ -4,6 +4,7 @@
 #include <magick++.h>
 
 #include <iostream>
+#include <stack>
 
 using namespace std;
 using namespace Tactics;
@@ -181,12 +182,34 @@ bool LoadSkeletal(Components::SkeletalAnimation * skeletal, vector<unsigned int>
 		}
 	}
 
-
 	// create VBO for vertex bone info
 	glGenBuffers(1, &skeletal->vertexBoneInfoVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, skeletal->vertexBoneInfoVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skeletal->vertexBoneInfo[0]) * skeletal->vertexBoneInfo.size(), &skeletal->vertexBoneInfo[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// save default animation
+	skeletal->defaultAnimation = skeletal->pscene->mAnimations[0];
+
+	// store all node animations
+	std::stack<aiNode *> nstack;
+	nstack.push(skeletal->pscene->mRootNode);
+	while (nstack.size()) {
+		aiNode * node = nstack.top();
+		nstack.pop();
+
+		for (unsigned int i = 0; i < skeletal->defaultAnimation->mNumChannels; i++) {
+			aiNodeAnim * pNodeAnim = skeletal->defaultAnimation->mChannels[i];
+
+			if (std::string(pNodeAnim->mNodeName.data) == std::string(node->mName.data)) {
+				skeletal->named_animations[string(node->mName.C_Str())] = pNodeAnim;
+			}
+		}
+
+		for (unsigned int c = 0; c < node->mNumChildren; c++) {
+			nstack.push(node->mChildren[c]);
+		}
+	}
 
 	return true;
 }

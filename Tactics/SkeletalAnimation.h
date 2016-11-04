@@ -71,6 +71,11 @@ namespace Tactics {
 			void BoneTransforms(float time);
 			glm::mat4 BoneTransformsDebug(float time);
 
+			// map of node names to animations
+			aiAnimation * defaultAnimation;
+			std::map<std::string, aiNodeAnim*> named_animations;
+			const aiNodeAnim * FindNodeAnim(const std::string &);
+
 		private:
 
 		}; // SkeletalAnimation

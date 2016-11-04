@@ -252,7 +252,9 @@ void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeA
 }
 
 
-const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName)
+// TODO this is slow
+/*
+const aiNodeAnim* Tactics::Components::SkeletalAnimation::FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName)
 {
 	for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
 		const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
@@ -264,18 +266,22 @@ const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string 
 
 	return NULL;
 }
-
+*/
+const aiNodeAnim * Tactics::Components::SkeletalAnimation::FindNodeAnim(const std::string & NodeName) {
+	return named_animations[NodeName];
+}
 
 void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, glm::mat4 parentTransform)
 {
 	std::string NodeName(pNode->mName.data);
 
-	const aiAnimation* pAnimation = pscene->mAnimations[0];
+//	const aiAnimation* pAnimation = pscene->mAnimations[0];
 
 	//Matrix4f NodeTransformation(pNode->mTransformation);
 	glm::mat4 NodeTransformation = aiMatrix4x4_mat4(pNode->mTransformation);
 
-	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+//	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+	const aiNodeAnim * pNodeAnim = FindNodeAnim(NodeName);
 
 	if (pNodeAnim) {
 		// Interpolate scaling and generate scaling transformation matrix
@@ -330,7 +336,7 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchyDebug(float Animat
 {
 	std::string NodeName(pNode->mName.data);
 
-	const aiAnimation* pAnimation = pscene->mAnimations[0];
+//	const aiAnimation* pAnimation = pscene->mAnimations[0];
 
 	Matrix4f NodeTransformationM4(pNode->mTransformation);
 	glm::mat4 NodeTransformation = aiMatrix4x4_mat4(pNode->mTransformation);
@@ -341,7 +347,8 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchyDebug(float Animat
 	}
 	assert(mateq(NodeTransformationM4, NodeTransformation));
 
-	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+//	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+	const aiNodeAnim * pNodeAnim = FindNodeAnim(NodeName);
 
 	if (pNodeAnim) {
 		// Interpolate scaling and generate scaling transformation matrix
