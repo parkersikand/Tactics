@@ -22,5 +22,8 @@
 //#include "SpinningSuzanne.h"
 //class MainWorld : public Tactics::Worlds::SpinningSuzanneWorld {};
 
-#include "BobLamp.h"
-class MainWorld : public BobLampWorld {};
+//#include "BobLamp.h"
+//class MainWorld : public BobLampWorld {};
+
+#include "WalkingBodyWorld.h"
+class MainWorld : public WalkingBodyWorld {};

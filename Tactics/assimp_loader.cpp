@@ -1,6 +1,8 @@
 
 #include "assimp_loader.h"
 
+#include "Util.h"
+
 #include <magick++.h>
 
 #include <iostream>
@@ -153,6 +155,7 @@ bool LoadSkeletal(Components::SkeletalAnimation * skeletal, vector<unsigned int>
 			skeletal->debug_bones[BoneIndex] = Matrix4f(pmesh->mBones[i]->mOffsetMatrix);
 
 			for (unsigned int j = 0; j < pmesh->mBones[i]->mNumWeights; j++) {
+				if (eqf(pmesh->mBones[i]->mWeights[j].mWeight, 0.f)) continue;
 				vertexId_boneId_weight[pmesh->mBones[i]->mWeights[j].mVertexId+offset][BoneIndex] =
 					pmesh->mBones[i]->mWeights[j].mWeight;
 			}

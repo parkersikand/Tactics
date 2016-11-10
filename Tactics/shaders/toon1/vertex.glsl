@@ -40,7 +40,7 @@ uniform bool isSkeletal;
 out vec2 UV;
 
 // pass through normal
-out vec3 varyingNormal;
+smooth out vec3 varyingNormal;
 
 // pass through position
 out vec4 VXpassthrough;
@@ -61,8 +61,6 @@ void main() {
     // we've defined our light in model space, so multiply the normals by the correct model transform matrix
 	vec3 transformedNormal = normalize(ti_model_transform * vec4(normal,0)).xyz;
     
-	
-
 	mat4 finalBone = mat4(0.0);
 	mat3 finalBoneIT = mat3(0.0);
 
@@ -84,8 +82,11 @@ void main() {
 	  finalBoneIT = mat3(1.f);
 	}
 
+	// final normal
+	varyingNormal = normalize(mat3(ti_model_transform) * finalBoneIT * normal);
+
 	//intensity;
-	intensity = dot(lightDir, normalize(mat3(ti_model_transform) * finalBoneIT * normal));
+	intensity = dot(lightDir, varyingNormal);
 
 	gl_Position = pvm * finalBone * vec4(vxPosition,1);
 	eyeSpaceVX = modelView * finalBone * vec4(vxPosition,1);

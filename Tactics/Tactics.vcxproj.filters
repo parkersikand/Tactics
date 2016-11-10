@@ -276,6 +276,9 @@
     <ClCompile Include="ogldev\technique.cpp">
       <Filter>Source Files\ogldev</Filter>
     </ClCompile>
+    <ClCompile Include="WalkingBodyWorld.cpp">
+      <Filter>Source Files\Worlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simple\fragment.glsl">
@@ -522,6 +525,9 @@
     </ClInclude>
     <ClInclude Include="..\external\include\technique.h">
       <Filter>Header Files\ogldev</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkingBodyWorld.h">
+      <Filter>Header Files\Worlds</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

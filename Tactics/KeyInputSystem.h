@@ -14,7 +14,7 @@ namespace Tactics {
 
 		// A system to read key input and fire events accordingly
 		// really just a facade to setup GLFW key callback
-		class KeyInputSystem : public ECS::System, 
+		class KeyInputSystem : public virtual ECS::System, 
 			public ECS::EventHandler<Events::KeyDown>, 
 			public ECS::EventHandler<Events::KeyUp>,
 			public ECS::EventHandler<Events::KeyRepeat> {

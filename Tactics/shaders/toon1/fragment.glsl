@@ -3,6 +3,7 @@
 // raw normal
 in vec3 varyingNormal;
 
+
 // computed intensity
 in float intensity;
 
@@ -23,6 +24,15 @@ uniform sampler2D fragmentTextureSampler;
 // use texture or color
 uniform bool useTexture;
 
+// view info
+uniform vec3 viewDirection;
+uniform vec3 cameraPos;
+
+// position
+in vec4 VXpassthrough;
+
+uniform mat4 model_transform;
+uniform mat4 ti_model_transform;
 
 uniform struct FogParams {
     vec4 fogColor;// = vec4 (0.f,0.f,0.f,0.f);
@@ -92,11 +102,25 @@ void toonifyColorHSL(inout vec3 c) {
 }
 
 // reduce saturation, clamp lightness
-void pastelizeHSL(inout vec3 c) {
-  if(c.y > 0.4) c.y = 0.4;
+void pastelizeHSL(inout vec3 c, in float intensity) {
+  if(intensity > 0.9)
+    c.z = 0.9;
+  else if (intensity > 0.6)
+    c.z = 0.6;
+  else if (intensity > 0.2)
+    c.z = 0.3;
+  else
+    c.z = 0.1;
+}
 
-  if(c.z > 0.4) c.z = 0.8;
-  else c.z = 0.5;
+void edgeDetect(inout vec3 colorHSL) {
+  vec4 worldSpacePosition = model_transform * VXpassthrough;
+  vec3 vd = normalize(cameraPos - vec3(worldSpacePosition));
+
+  if(abs(dot(vd,varyingNormal)) < 0.4f) {
+    colorHSL.y = 0;
+	colorHSL.z = 0;
+  }
 }
 
 void main() {
@@ -107,9 +131,11 @@ void main() {
 	  colorHSL = rgb2hsl(vsColor);
 	}
     
-	colorHSL.z *= max(0.1, min(1.0, intensity));
+	//colorHSL.z *= max(0.1, min(1.0, intensity));
+	float clampedIntensity = max(0.1, min(1.0, intensity));
 	//toonifyColorHSL(colorHSL);
-	//pastelizeHSL(colorHSL);
+	pastelizeHSL(colorHSL, clampedIntensity);
+	edgeDetect(colorHSL);
 	color = vec4(hsl2rgb(colorHSL), 1.0);
 
 	// TODO fog stuff

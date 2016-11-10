@@ -106,6 +106,14 @@ namespace Tactics {
 
 		}; // SkeletalAnimation::Animation::KeyFrame
 
+
+		// Controller for skeletal animation
+		struct SkeletalAnimationController : public ECS::Component {
+			SkeletalAnimation * skeletal;
+			bool isAnimating = true;
+			float animStart = 0;
+		};
+
 	} // namespace Tactics::Components
 
 	namespace SkeletalAnimation {

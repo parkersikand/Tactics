@@ -32,7 +32,8 @@ namespace Tactics {
 			glm::vec4 getClearColor() { return clearColor; }
 
 			// send SkeletalAnimation data to shaders
-			void HandleSkeletal(Components::SkeletalAnimation * sa, unsigned int startLocation = 0);
+			//void HandleSkeletal(Components::SkeletalAnimation * sa, unsigned int startLocation = 0);
+			void HandleSkeletal(Components::SkeletalAnimationController * sa, unsigned int startLocation = 0);
 
 			struct FogParameters {
 				glm::vec4 fogColor = glm::vec4(0.7f,0.7f,0.7f,1.f);
@@ -78,7 +79,8 @@ namespace Tactics {
 			GLuint programId;
 
 			// uniforms
-			GLuint viewU, projectionU, modelTransformU, tiModelTransformU, useTextureU, textureHW, hwLightDir;
+			GLuint viewU, projectionU, modelTransformU, tiModelTransformU, useTextureU, textureHW, hwLightDir, viewDirectionU;
+			GLuint cameraPosU;
 			GLuint isSkeletalU;
 
 			// batched VBOS

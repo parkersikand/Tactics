@@ -55,12 +55,12 @@ using namespace Tactics::ECS;
 		else if (pos->z < 0 && pos->x > 0) angle += 2 * (float)PI;
 		//std::cout << angle * 180 / PI << std::endl;
 		// increase or decrease based on input
-		if (keycode == GLFW_KEY_LEFT) {
+		if (keycode == GLFW_KEY_Q) {
 			angle += mult * 1;
 			pos->x = dist * cos(angle);
 			pos->z = dist * sin(angle);
 		}
-		else if (keycode == GLFW_KEY_RIGHT) {
+		else if (keycode == GLFW_KEY_E) {
 			angle -= mult * 1;
 			pos->x = dist * cos(angle);
 			pos->z = dist * sin(angle);

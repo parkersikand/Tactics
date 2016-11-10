@@ -248,6 +248,7 @@
     <ClCompile Include="ThreadedSystem.cpp" />
     <ClCompile Include="ThreadedWorld.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="WalkingBodyWorld.cpp" />
     <ClCompile Include="WalkOnSurface.cpp" />
     <ClCompile Include="WalkOnSurfaceTest.cpp" />
     <ClCompile Include="WindowManager.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="ThreadedWorld.h" />
     <ClInclude Include="TimedFiringSystem.h" />
     <ClInclude Include="Util.h" />
+    <ClInclude Include="WalkingBodyWorld.h" />
     <ClInclude Include="WalkOnSurface.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>

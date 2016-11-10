@@ -62,6 +62,19 @@ namespace Tactics {
 			return glm::lookAt(glm::vec3(location->x, location->y, location->z), cameraInfo->lookAt, up);
 		}
 
+		glm::vec3 getViewDirection() {
+			ECS::Entity cameraE = getWorld()->entityFromHandle(currentCamera);
+			auto * location = cameraE.getComponent<Components::Position3D<> >();
+			auto * cameraInfo = cameraE.getComponent<Components::CameraComponent>();
+			return glm::vec3(location->x, location->y, location->z) - cameraInfo->lookAt;
+		}
+
+		glm::vec3 getCameraPos() {
+			ECS::Entity cameraE = getWorld()->entityFromHandle(currentCamera);
+			auto * location = cameraE.getComponent<Components::Position3D<> >();
+			return glm::vec3(location->x, location->y, location->z);
+		}
+
 		float getZNear() { return zNear; }
 		void setZNear(float f) { zNear = f; }
 		float getZFar() { return zFar; }

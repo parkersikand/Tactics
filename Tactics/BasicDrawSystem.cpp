@@ -31,6 +31,8 @@ Systems::BasicDrawSystem::BasicDrawSystem() {
 	isSkeletalU = glGetUniformLocation(programId, "isSkeletal");
 	fogColorU = glGetUniformLocation(programId, "fogParams.fogColor");
 	fogDensityU = glGetUniformLocation(programId, "fogParams.fogDensity");
+	viewDirectionU = glGetUniformLocation(programId, "viewDirection");
+	cameraPosU = glGetUniformLocation(programId, "cameraPos");
 
 	// bind bone uniforms
 	for (unsigned int b = 0; b < 64; b++) {
@@ -231,25 +233,32 @@ void Systems::BasicDrawSystem::run(std::vector<ECS::Entity> & entities) {
 	draw(entities);
 }
 
-void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimation * sa, unsigned int offset) {
+void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimationController * sa, unsigned int offset) {
 
-	sa->BoneTransforms((float)glfwGetTime());
+	
+	if (sa->isAnimating) {
+		sa->skeletal->BoneTransforms((float)glfwGetTime() - sa->animStart);
+	}
+	else {
+		sa->skeletal->BoneTransforms(0.f);
+	}
+	
 
 	// set flag
 	glUniform1ui(isSkeletalU, GL_TRUE);
 	glm::mat3 boneIT;
 	// send transforms to shader
-	for (unsigned int b = 0; b < sa->bones.size(); b++) {
-		glUniformMatrix4fv(boneU[b], 1, GL_TRUE, &sa->bone_transforms[b][0][0]);
-		boneIT = glm::mat3(glm::transpose(glm::inverse(sa->bone_transforms[b])));
-		glUniformMatrix3fv(boneITU[b], 1, GL_TRUE, &boneIT[0][0]);
+	for (unsigned int b = 0; b < sa->skeletal->bones.size(); b++) {
+		glUniformMatrix4fv(boneU[b], 1, GL_TRUE, &sa->skeletal->bone_transforms[b][0][0]);
+		boneIT = glm::mat3(glm::inverse(sa->skeletal->bone_transforms[b]));
+		glUniformMatrix3fv(boneITU[b], 1, GL_FALSE, &boneIT[0][0]);
 	}
 
 	auto sz = sizeof(Components::SkeletalAnimation::VertexBoneInfo);
 
 	// send vertex bone info
 	glEnableVertexAttribArray(4);
-	glBindBuffer(GL_ARRAY_BUFFER, sa->vertexBoneInfoVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, sa->skeletal->vertexBoneInfoVBO);
 	glVertexAttribIPointer(4, 4, GL_UNSIGNED_BYTE, sz, (void *)(offset * sz));
 	glEnableVertexAttribArray(5);
 	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sz, (void *)(offset * sz + 4));
@@ -267,10 +276,16 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 	auto vm = cameraSystem->getViewMatrix();
 	glUniformMatrix4fv(viewU, 1, GL_FALSE, &vm[0][0]);
 
+	auto vd = cameraSystem->getViewDirection();
+	glUniform3fv(viewDirectionU, 1, &vd[0]);
+
+	auto cp = cameraSystem->getCameraPos();
+	glUniform3fv(cameraPosU, 1, &cp[0]);
+
 	auto pm = cameraSystem->getProjectionMatrix();
 	glUniformMatrix4fv(projectionU, 1, GL_FALSE, &pm[0][0]);
 
-	glm::vec3 lightDir = glm::normalize(glm::vec3(5.f, 10.f, 5.f));
+	glm::vec3 lightDir = glm::normalize(glm::vec3(10.f, 10.f, 10.f));
 	glUniform3fv(hwLightDir, 1, &lightDir[0]);
 
 	for (auto & e : entities) {
@@ -335,7 +350,8 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 		}
 
 		// check for SkeletalAnimation
-		auto * sa = e.getComponent<Components::SkeletalAnimation>();
+//		auto * sa = e.getComponent<Components::SkeletalAnimation>();
+		auto * sa = e.getComponent<Components::SkeletalAnimationController>();
 		if (sa != nullptr) HandleSkeletal(sa);
 
 		// call draw
@@ -393,7 +409,8 @@ void Systems::BasicDrawSystem::drawMulti(ECS::EntityHdl multiHdl) {
 		}
 
 		// check for SkeletalAnimation
-		auto * sa = world->getComponent<Components::SkeletalAnimation>(multiHdl);
+		//auto * sa = world->getComponent<Components::SkeletalAnimation>(multiHdl);
+		auto * sa = world->getComponent<Components::SkeletalAnimationController>(multiHdl);
 		if (sa != nullptr) {
 			HandleSkeletal(sa, multi->offsets[m]);
 		}

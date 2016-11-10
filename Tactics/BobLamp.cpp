@@ -31,4 +31,20 @@ void BobLampWorld::setup() {
 	}
 	auto * skeletal = addComponent<Components::SkeletalAnimation>(bob);
 	LoadSkeletal(skeletal, idxData, "assets/models/boblampclean.md5mesh");
+
+	// load body
+	EntityHdl body = newEntity();
+	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(body);
+	auto * body3d = addComponent<Components::MultiObject3D>(body);
+	LoadMultiMesh(body3d, "assets/models/body.fbx");
+	auto * bmodelTransform = addComponent<Components::ModelTransform>(body);
+	bmodelTransform->transform = glm::scale(glm::mat4(1.f), glm::vec3(0.05, 0.05, 0.05));
+	//bmodelTransform->transform = glm::rotate(bmodelTransform->transform, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+	bmodelTransform->transform = glm::translate(bmodelTransform->transform, glm::vec3(15.f, 0.f, 15.f));
+	std::vector<unsigned int> bidxData;
+	for (auto & m : body3d->objects) {
+		bidxData.insert(bidxData.end(), m.idxData.begin(), m.idxData.end());
+	}
+	auto * bskeletal = addComponent<Components::SkeletalAnimation>(body);
+	LoadSkeletal(bskeletal, bidxData, "assets/models/body.fbx");
 }
