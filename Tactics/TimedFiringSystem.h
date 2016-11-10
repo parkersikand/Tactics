@@ -21,10 +21,13 @@ namespace Tactics {
 	template <typename EventType = TimerEvent>
 	class TimedFiringSystem : public ECS::RunnableSystem {
 	public:
-		
-		explicit TimedFiringSystem(double ms) : interval(ms) {}
+		TimedFiringSystem() {
+			interval = 1000.0;
+		};
+		TimedFiringSystem(double ms) : interval(ms) {}
 
 		double getInterval() const { return interval; }
+		void setInterval(double i) { interval = i; }
 
 		virtual void run() {
 			double timeNow = glfwGetTime() * 1000;

@@ -3,6 +3,7 @@
 #include "WalkingBodyWorld.h"
 #include "BasicDrawSystem.h"
 #include "assimp_loader.h"
+#include "TimedFiringSystem.h"
 
 
 using namespace Tactics;
@@ -10,9 +11,14 @@ using namespace Tactics::ECS;
 
 
 WalkingBodyWorld::WalkingBodyWorld() {
-	addRunnableGlobalSystem(updater);
+//	addRunnableGlobalSystem(updater);
 	EventDispatcher::registerEventHandler<Tactics::Events::KeyDown>(updater);
 	EventDispatcher::registerEventHandler<Tactics::Events::KeyUp>(updater);
+
+	// create event firing system
+	auto * firing = createManagedSystem<Tactics::TimedFiringSystem<BodyUpdateEvent>>();
+	firing->setInterval(30.0);
+	addRunnableGlobalSystem(*firing);
 }
 
 
@@ -28,7 +34,7 @@ void WalkingBodyWorld::setup() {
 	auto * body3d = addComponent<Components::MultiObject3D>(bodyHdl);
 	LoadMultiMesh(body3d, "assets/models/body.fbx");
 	auto * bmodelTransform = addComponent<Components::ModelTransform>(bodyHdl);
-	bmodelTransform->transform = glm::scale(glm::mat4(1.f), glm::vec3(0.1, 0.1, 0.1));
+	bmodelTransform->transform = glm::scale(glm::mat4(1.f), glm::vec3(0.1f, 0.1f, 0.1f));
 	//bmodelTransform->transform = glm::rotate(bmodelTransform->transform, glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 	//bmodelTransform->transform = glm::translate(bmodelTransform->transform, glm::vec3(15.f, 0.f, 15.f));
 	std::vector<unsigned int> bidxData;
@@ -57,10 +63,10 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyDown & kde)
 		animationController->animStart = glfwGetTime();
 		break;
 	case GLFW_KEY_LEFT:
-		angularVelocity = 0.001f;
+		angularVelocity = 0.1f;
 		break;
 	case GLFW_KEY_RIGHT:
-		angularVelocity = -0.001f;
+		angularVelocity = -0.1f;
 		break;
 	}
 }
@@ -80,7 +86,8 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyUp & kue) {
 }
 
 
-void WalkingBodyWorld::BodyUpdater::run() {
+//void WalkingBodyWorld::BodyUpdater::run() {
+void WalkingBodyWorld::BodyUpdater::handle(const BodyUpdateEvent &) {
 	facing += angularVelocity;
 	modelTransform->transform = glm::rotate(baseTransform, facing, glm::vec3(0.f, 1.f, 0.f));
 	if (walking) {
