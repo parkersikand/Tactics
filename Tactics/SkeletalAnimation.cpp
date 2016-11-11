@@ -268,7 +268,7 @@ const aiNodeAnim* Tactics::Components::SkeletalAnimation::FindNodeAnim(const aiA
 }
 */
 const aiNodeAnim * Tactics::Components::SkeletalAnimation::FindNodeAnim(const std::string & NodeName) {
-	return named_animations[NodeName];
+	return named_node_animations[currentAnimationName][NodeName];
 }
 
 void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchy(float AnimationTime, const aiNode* pNode, glm::mat4 parentTransform)
@@ -435,10 +435,10 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchyDebug(float Animat
 //Matrix4f Mesh::BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms)
 void Components::SkeletalAnimation::BoneTransforms(float TimeInSeconds)
 {
-	float TicksPerSecond = (float)pscene->mAnimations[0]->mTicksPerSecond != 0.f ?
-		pscene->mAnimations[0]->mTicksPerSecond : 25.0f;
+	float TicksPerSecond = (float)named_animations[currentAnimationName]->mTicksPerSecond != 0.f ?
+		named_animations[currentAnimationName]->mTicksPerSecond : 25.f;
 	float TimeInTicks = TimeInSeconds * TicksPerSecond;
-	float AnimationTime = fmod(TimeInTicks, pscene->mAnimations[0]->mDuration);
+	float AnimationTime = fmod(TimeInTicks, named_animations[currentAnimationName]->mDuration);
 
 	bone_transforms.resize(bones.size());
 	ReadNodeHeirarchy(AnimationTime, pscene->mRootNode, glm::mat4(1.f));
@@ -464,3 +464,9 @@ glm::mat4 Components::SkeletalAnimation::BoneTransformsDebug(float TimeInSeconds
 
 } // BoneTransforms
 */
+
+
+void Components::SkeletalAnimationController::setAnimation(const char * animName) {
+	currentAnimationName = string(animName);
+	skeletal->currentAnimationName = currentAnimationName;
+}

@@ -73,7 +73,12 @@ namespace Tactics {
 
 			// map of node names to animations
 			aiAnimation * defaultAnimation;
-			std::map<std::string, aiNodeAnim*> named_animations;
+			// map of node names to node animations
+			//std::map<std::string, aiNodeAnim *> named_animations;
+			// map of animation name to map of node names and animations
+			std::map<std::string, std::map<std::string, aiNodeAnim*>> named_node_animations;
+			std::map<std::string, aiAnimation *> named_animations;
+			std::string currentAnimationName;
 			const aiNodeAnim * FindNodeAnim(const std::string &);
 
 		private:
@@ -112,6 +117,8 @@ namespace Tactics {
 			SkeletalAnimation * skeletal;
 			bool isAnimating = true;
 			float animStart = 0;
+			std::string currentAnimationName="default";
+			void setAnimation(const char *);
 		};
 
 	} // namespace Tactics::Components

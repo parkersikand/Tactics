@@ -45,7 +45,8 @@ void WalkingBodyWorld::setup() {
 	LoadSkeletal(bskeletal, bidxData, "assets/models/body.fbx");
 	auto * skeletalController = addComponent<Components::SkeletalAnimationController>(bodyHdl);
 	skeletalController->skeletal = bskeletal;
-	skeletalController->isAnimating = false;
+	skeletalController->isAnimating = true;
+	skeletalController->setAnimation("Armature|Idle");
 
 	// send values to input handler
 	updater.animationController = skeletalController;
@@ -59,8 +60,9 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyDown & kde)
 	switch (kde.keyCode) {
 	case GLFW_KEY_UP:
 		walking = true;
-		animationController->isAnimating = true;
+//		animationController->isAnimating = true;
 		animationController->animStart = glfwGetTime();
+		animationController->setAnimation("Armature|Run");
 		break;
 	case GLFW_KEY_LEFT:
 		angularVelocity = 0.1f;
@@ -76,7 +78,9 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyUp & kue) {
 	switch (kue.keyCode) {
 	case GLFW_KEY_UP:
 		walking = false;
-		animationController->isAnimating = false;
+//		animationController->isAnimating = false;
+		animationController->setAnimation("Armature|Idle");
+		animationController->animStart = glfwGetTime();
 		break;
 	case GLFW_KEY_LEFT:
 	case GLFW_KEY_RIGHT:

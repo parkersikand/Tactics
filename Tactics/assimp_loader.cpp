@@ -191,28 +191,39 @@ bool LoadSkeletal(Components::SkeletalAnimation * skeletal, vector<unsigned int>
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skeletal->vertexBoneInfo[0]) * skeletal->vertexBoneInfo.size(), &skeletal->vertexBoneInfo[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	// save default animation
-	skeletal->defaultAnimation = skeletal->pscene->mAnimations[0];
+	aiAnimation * currentAnimation = NULL;
+	for (unsigned int animIdx = 0; animIdx < skeletal->pscene->mNumAnimations; animIdx++) {
 
-	// store all node animations
-	std::stack<aiNode *> nstack;
-	nstack.push(skeletal->pscene->mRootNode);
-	while (nstack.size()) {
-		aiNode * node = nstack.top();
-		nstack.pop();
+		currentAnimation = skeletal->pscene->mAnimations[animIdx];
+		std::string animationName(currentAnimation->mName.data);
 
-		for (unsigned int i = 0; i < skeletal->defaultAnimation->mNumChannels; i++) {
-			aiNodeAnim * pNodeAnim = skeletal->defaultAnimation->mChannels[i];
+		skeletal->named_animations[animationName] = currentAnimation;
 
-			if (std::string(pNodeAnim->mNodeName.data) == std::string(node->mName.data)) {
-				skeletal->named_animations[string(node->mName.C_Str())] = pNodeAnim;
+		// store all node animations
+		std::stack<aiNode *> nstack;
+		nstack.push(skeletal->pscene->mRootNode);
+		while (nstack.size()) {
+			aiNode * node = nstack.top();
+			nstack.pop();
+
+			// find the node animation for the current node
+			for (unsigned int i = 0; i < currentAnimation->mNumChannels; i++) {
+				aiNodeAnim * pNodeAnim = currentAnimation->mChannels[i];
+
+				if (std::string(pNodeAnim->mNodeName.data) == std::string(node->mName.data)) {
+					skeletal->named_node_animations[animationName][string(node->mName.data)] = pNodeAnim;
+				}
 			}
-		}
 
-		for (unsigned int c = 0; c < node->mNumChildren; c++) {
-			nstack.push(node->mChildren[c]);
-		}
-	}
+			for (unsigned int c = 0; c < node->mNumChildren; c++) {
+				nstack.push(node->mChildren[c]);
+			}
+		} // while nstack
+
+	} // for each animation
+
+	// set the default animation to 0
+	skeletal->currentAnimationName = string(skeletal->pscene->mAnimations[0]->mName.data);
 
 	return true;
 }
