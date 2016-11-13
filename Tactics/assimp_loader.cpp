@@ -242,15 +242,10 @@ bool LoadMultiMesh(Tactics::Components::MultiObject3D * multi, const char * file
 	string dir;
 
 	auto LastSlash = string(filename).find_last_of('/');
-	if (LastSlash == string::npos) {
-		dir = ".";
-	}
-	else if (LastSlash == 0) {
-		dir = "/";
-	}
-	else {
-		dir = string(filename).substr(0,LastSlash);
-	}
+
+	if (LastSlash == string::npos) dir = ".";
+	else if (LastSlash == 0) dir = "/";
+	else dir = string(filename).substr(0,LastSlash);
 
 	// Load textures
 	std::vector<GLuint> textures;

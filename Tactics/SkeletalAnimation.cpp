@@ -59,7 +59,7 @@ bool SkeletalAnimation::SkeletalAnimationHelper::LoadVertexBoneInfo(
 	return LoadVertexBoneInfo(sa, data);
 }
 
-glm::mat4 linearInterpolateMatrices(glm::mat4 a, glm::mat4 b, double percent) {
+glm::mat4 linearInterpolateMatrices(glm::mat4 a, glm::mat4 b, float percent) {
 	glm::mat4 out;
 
 	for (unsigned int i = 0; i < 4; i++) {
@@ -72,7 +72,7 @@ glm::mat4 linearInterpolateMatrices(glm::mat4 a, glm::mat4 b, double percent) {
 }
 
 
-glm::mat4 InterpolateRotationMatrices(glm::mat4 a, glm::mat4 b, double factor) {
+glm::mat4 InterpolateRotationMatrices(glm::mat4 a, glm::mat4 b, float factor) {
 	glm::quat qa = glm::quat_cast(a);
 	glm::quat qb = glm::quat_cast(b);
 	return glm::mat4_cast(glm::slerp(qa, qb, (float)factor));
@@ -104,9 +104,9 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 			// bone transform at second frame
 			++it;
 			auto t2 = it->second.bones[bone.boneName];
-		    bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, p);
-			bone.translation = linearInterpolateMatrices(t1.translation, t2.translation, p);
-			bone.scale = linearInterpolateMatrices(t1.scale, t2.scale, p);
+		    bone.rotation = InterpolateRotationMatrices(t1.rotation, t2.rotation, (float)p);
+			bone.translation = linearInterpolateMatrices(t1.translation, t2.translation, (float)p);
+			bone.scale = linearInterpolateMatrices(t1.scale, t2.scale, (float)p);
 		} // for each bone
 
 	}
@@ -126,24 +126,6 @@ void SkeletalAnimation::SkeletalAnimationHelper::InterpolateBoneTransforms(Compo
 	}
 }  //  InterpolateBoneTransforms
 
-/*
-glm::mat4 aiMatrix4x4_mat4(aiMatrix4x4 input) {
-	glm::mat4 output;
-	for (unsigned int i = 0; i < 4; i++)
-		for (unsigned int j = 0; j < 4; j++)
-			output[i][j] = input[i][j];
-	return output;
-}
-
-
-glm::mat4 aiMatrix3x3_mat4(aiMatrix3x3 input) {
-	glm::mat4 output(1.f); // initialize identity matrix
-	for (unsigned int i = 0; i < 3; i++)
-		for (unsigned int j = 0; j < 3; j++)
-			output[i][j] = input[i][j];
-	return output;
-}
-*/
 
 unsigned int FindPosition(float AnimationTime, const aiNodeAnim* pNodeAnim)
 {
@@ -252,21 +234,6 @@ void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeA
 }
 
 
-// TODO this is slow
-/*
-const aiNodeAnim* Tactics::Components::SkeletalAnimation::FindNodeAnim(const aiAnimation* pAnimation, const std::string NodeName)
-{
-	for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
-		const aiNodeAnim* pNodeAnim = pAnimation->mChannels[i];
-
-		if (std::string(pNodeAnim->mNodeName.data) == NodeName) {
-			return pNodeAnim;
-		}
-	}
-
-	return NULL;
-}
-*/
 const aiNodeAnim * Tactics::Components::SkeletalAnimation::FindNodeAnim(const std::string & NodeName) {
 	return named_node_animations[currentAnimationName][NodeName];
 }
@@ -275,13 +242,11 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchy(float AnimationTi
 {
 	std::string NodeName(pNode->mName.data);
 
-//	const aiAnimation* pAnimation = pscene->mAnimations[0];
-
-	//Matrix4f NodeTransformation(pNode->mTransformation);
 	glm::mat4 NodeTransformation = aiMatrix4x4_mat4(pNode->mTransformation);
 
-//	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
-	const aiNodeAnim * pNodeAnim = FindNodeAnim(NodeName);
+//	const aiNodeAnim * pNodeAnim = FindNodeAnim(NodeName);
+	// eliminate function call
+	const aiNodeAnim * pNodeAnim = named_node_animations[currentAnimationName][NodeName];
 
 	if (pNodeAnim) {
 		// Interpolate scaling and generate scaling transformation matrix
@@ -292,7 +257,6 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchy(float AnimationTi
 		// Interpolate rotation and generate rotation transformation matrix
 		aiQuaternion RotationQ;
 		CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
-		//glm::mat4 RotationM = aiMatrix3x3_mat4(RotationQ.GetMatrix());
 		glm::mat4 RotationM = aiMatrix3x3_mat4(RotationQ.GetMatrix());
 
 		// Interpolate translation and generate translation transformation matrix
@@ -301,14 +265,13 @@ void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchy(float AnimationTi
 		glm::mat4 TranslationM = glm::transpose(glm::translate(glm::mat4(1.f), glm::vec3(Translation.x, Translation.y, Translation.z)));
 
 		// Combine the above transformations
-		NodeTransformation = ScalingM * RotationM * TranslationM;  // transpose of ogldev matrix
+		NodeTransformation = ScalingM * RotationM * TranslationM; 
 	}
 
 	glm::mat4 GlobalTransformation = NodeTransformation * parentTransform;
 
 	if (name_id.find(NodeName) != name_id.end()) {
 		unsigned int BoneIndex = name_id[NodeName];
-//		bone_transforms[BoneIndex] = globalInverseTransform * GlobalTransformation * bones[BoneIndex].boneSpace;
 		bone_transforms[BoneIndex] = bones[BoneIndex].boneSpace * GlobalTransformation * globalInverseTransform;
 	}
 
@@ -332,141 +295,21 @@ glm::mat4 mmul(glm::mat4 a, glm::mat4 b) {
 }
 
 
-void Tactics::Components::SkeletalAnimation::ReadNodeHeirarchyDebug(float AnimationTime, const aiNode* pNode, Matrix4f ParentTransform, std::vector<glm::mat4> & trace)
-{
-	std::string NodeName(pNode->mName.data);
-
-//	const aiAnimation* pAnimation = pscene->mAnimations[0];
-
-	Matrix4f NodeTransformationM4(pNode->mTransformation);
-	glm::mat4 NodeTransformation = aiMatrix4x4_mat4(pNode->mTransformation);
-	trace.push_back(NodeTransformation);
-	if (!mateq(NodeTransformationM4, NodeTransformation)) {
-		int stop = 0;
-		throw std::exception("NodeTransformInit");
-	}
-	assert(mateq(NodeTransformationM4, NodeTransformation));
-
-//	const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
-	const aiNodeAnim * pNodeAnim = FindNodeAnim(NodeName);
-
-	if (pNodeAnim) {
-		// Interpolate scaling and generate scaling transformation matrix
-		aiVector3D Scaling;
-		CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
-		Matrix4f ScalingM4;
-		ScalingM4.InitScaleTransform(Scaling.x, Scaling.y, Scaling.z);
-		//glm::mat4 ScalingM = glm::scale(glm::mat4(1.f), glm::vec3(Scaling.x, Scaling.y, Scaling.z));
-		glm::mat4 ScalingM = Matrix4f2mat4(ScalingM4);
-		trace.push_back(ScalingM);
-		if (!mateq(ScalingM4, ScalingM)) {
-			int stop = 0;
-			throw std::exception("Scaling");
-		}
-		assert(mateq(ScalingM4, ScalingM));
-
-		// Interpolate rotation and generate rotation transformation matrix
-		aiQuaternion RotationQ;
-		CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
-		Matrix4f RotationM4 = Matrix4f(RotationQ.GetMatrix());
-		glm::mat4 RotationM = aiMatrix3x3_mat4(RotationQ.GetMatrix());
-		trace.push_back(RotationM);
-		if (!mateq(RotationM4, RotationM)) {
-			int stop = 0;
-			throw std::exception("Rotation");
-		}
-		assert(mateq(RotationM4, RotationM));
-		
-		// Interpolate translation and generate translation transformation matrix
-		aiVector3D Translation;
-		CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
-		Matrix4f TranslationM4;
-		TranslationM4.InitTranslationTransform(Translation.x, Translation.y, Translation.z);
-		glm::mat4 TranslationM = glm::transpose(glm::translate(glm::mat4(1.f), glm::vec3(Translation.x, Translation.y, Translation.z)));
-		trace.push_back(TranslationM);
-		if (!mateq(TranslationM4, TranslationM)) {
-			int stop = 0;
-			throw std::exception("Translation");
-		}
-		assert(mateq(TranslationM4, TranslationM));
-		
-
-		// Combine the above transformations
-		NodeTransformationM4 = TranslationM4 * RotationM4 * ScalingM4;
-		NodeTransformation = ScalingM * RotationM * TranslationM;
-//		NodeTransformation = mmul(TranslationM, mmul(RotationM, ScalingM));
-		trace.push_back(NodeTransformation);
-		if (!mateq(NodeTransformationM4, NodeTransformation)) {
-			int stop = 0;
-			throw std::exception("Final NodeTransform");
-		}
-		assert(mateq(NodeTransformationM4, NodeTransformation));
-	}
-
-	Matrix4f GlobalTransformationM4 = ParentTransform * NodeTransformationM4;
-	glm::mat4 GlobalTransformation = NodeTransformation * Matrix4f2mat4(ParentTransform);
-	//GlobalTransformation = mmul(Matrix4f2mat4(ParentTransform), NodeTransformation); // works
-	trace.push_back(GlobalTransformation);
-	if (!mateq(GlobalTransformationM4, GlobalTransformation)) {
-		int stop = 0;
-		throw std::exception("GlobalTransformation");
-	}
-	assert(mateq(GlobalTransformationM4, GlobalTransformation));
-
-	if (name_id.find(NodeName) != name_id.end()) {
-		unsigned int BoneIndex = name_id[NodeName];
-		bone_transforms[BoneIndex] = bones[BoneIndex].boneSpace * GlobalTransformation * globalInverseTransform;
-//		bone_transforms[BoneIndex] = mmul(globalInverseTransform, mmul(GlobalTransformation, bones[BoneIndex].boneSpace)); // works
-		debug_transforms[BoneIndex] = globalInverseTransformM4 * GlobalTransformationM4 * debug_bones[BoneIndex];
-		trace.push_back(bone_transforms[BoneIndex]);
-		if (!mateq(debug_transforms[BoneIndex], bone_transforms[BoneIndex])) {
-			int stop = 0;
-			throw std::exception("bone transform");
-		}
-		assert(mateq(debug_transforms[BoneIndex], bone_transforms[BoneIndex]));
-	}
-
-	for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
-		ReadNodeHeirarchyDebug(AnimationTime, pNode->mChildren[i], GlobalTransformationM4, trace);
-	}
-}
-
 // compute final bone transforms
-//Matrix4f Mesh::BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms)
 void Components::SkeletalAnimation::BoneTransforms(float TimeInSeconds)
 {
 	float TicksPerSecond = (float)named_animations[currentAnimationName]->mTicksPerSecond != 0.f ?
-		named_animations[currentAnimationName]->mTicksPerSecond : 25.f;
+		(float)named_animations[currentAnimationName]->mTicksPerSecond : 25.f;
 	float TimeInTicks = TimeInSeconds * TicksPerSecond;
-	float AnimationTime = fmod(TimeInTicks, named_animations[currentAnimationName]->mDuration);
+	float AnimationTime = fmod(TimeInTicks, (float)named_animations[currentAnimationName]->mDuration);
 
 	bone_transforms.resize(bones.size());
 	ReadNodeHeirarchy(AnimationTime, pscene->mRootNode, glm::mat4(1.f));
 } // BoneTransforms
 
 
-  // compute final bone transforms
-  //Matrix4f Mesh::BoneTransform(float TimeInSeconds, vector<Matrix4f>& Transforms)
-/*
-glm::mat4 Components::SkeletalAnimation::BoneTransformsDebug(float TimeInSeconds)
-{
-
-	float TicksPerSecond = (float)pscene->mAnimations[0]->mTicksPerSecond != 0.f ?
-		pscene->mAnimations[0]->mTicksPerSecond : 25.0f;
-
-	float TimeInTicks = TimeInSeconds * TicksPerSecond;
-
-	float AnimationTime = fmod(TimeInTicks, pscene->mAnimations[0]->mDuration);
-
-	bone_transforms.resize(bones.size());
-	//return ReadNodeHeirarchyDebug(AnimationTime, pscene->mRootNode, glm::mat4(1.f));
-	
-
-} // BoneTransforms
-*/
-
-
 void Components::SkeletalAnimationController::setAnimation(const char * animName) {
 	currentAnimationName = string(animName);
 	skeletal->currentAnimationName = currentAnimationName;
+	animStart = glfwGetTimef();
 }

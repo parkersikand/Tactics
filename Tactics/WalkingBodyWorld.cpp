@@ -4,6 +4,7 @@
 #include "BasicDrawSystem.h"
 #include "assimp_loader.h"
 #include "TimedFiringSystem.h"
+#include "Util.h"
 
 
 using namespace Tactics;
@@ -53,6 +54,14 @@ void WalkingBodyWorld::setup() {
 	updater.modelTransform = bmodelTransform;
 	updater.baseTransform = bmodelTransform->transform;
 	updater.position = getComponent<Components::Position3D<>>(bodyHdl);
+
+	// make billboard object
+	EntityHdl billboardHdl = newEntity();
+	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(billboardHdl);
+	auto * b3d = getComponent<Components::CObject3D>(billboardHdl);
+	Components::CObject3DHelper::setData(b3d, make_square_tris(), {}, {});
+	auto * billColor = addComponent<Components::Colored3D>(billboardHdl);
+	Components::Colored3DHelper::SingleColor(billColor, b3d, glm::vec3(1.f, 1.f, 0.f));
 }
 
 
@@ -60,8 +69,6 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyDown & kde)
 	switch (kde.keyCode) {
 	case GLFW_KEY_UP:
 		walking = true;
-//		animationController->isAnimating = true;
-		animationController->animStart = glfwGetTime();
 		animationController->setAnimation("Armature|Run");
 		break;
 	case GLFW_KEY_LEFT:
@@ -78,9 +85,7 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyUp & kue) {
 	switch (kue.keyCode) {
 	case GLFW_KEY_UP:
 		walking = false;
-//		animationController->isAnimating = false;
 		animationController->setAnimation("Armature|Idle");
-		animationController->animStart = glfwGetTime();
 		break;
 	case GLFW_KEY_LEFT:
 	case GLFW_KEY_RIGHT:
@@ -90,7 +95,6 @@ void WalkingBodyWorld::BodyUpdater::handle(const Tactics::Events::KeyUp & kue) {
 }
 
 
-//void WalkingBodyWorld::BodyUpdater::run() {
 void WalkingBodyWorld::BodyUpdater::handle(const BodyUpdateEvent &) {
 	facing += angularVelocity;
 	modelTransform->transform = glm::rotate(baseTransform, facing, glm::vec3(0.f, 1.f, 0.f));

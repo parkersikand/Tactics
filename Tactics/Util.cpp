@@ -98,7 +98,7 @@ float lineNormalAngleRad(glm::vec3 line, glm::vec3 normal) {
 
 
 // naive, fast implementation
-float e = 10e-7;
+float e = 10e-7f;
 bool eqf(float a, float b) {
 	return abs(a - b) < e;
 }
@@ -137,3 +137,17 @@ bool mateq(Matrix4f a, glm::mat4 b) {
 	return true;
 }
 
+float glfwGetTimef() {
+	return (float)glfwGetTime();
+}
+
+
+vector<glm::vec3> make_square_tris(float size) {
+	vector<glm::vec3> out;
+	out.push_back(glm::vec3(-size / 2, -size / 2, 0));
+	out.push_back(glm::vec3(-size / 2, size / 2, 0));
+	out.push_back(glm::vec3(size / 2, size / 2, 0));
+	out.push_back(glm::vec3(size / 2, size / 2, 0));
+	out.push_back(glm::vec3(size / 2, -size / 2, 0));
+	out.push_back(glm::vec3(-size / 2, -size / 2, 0));
+}

@@ -40,9 +40,13 @@ ostream & operator<<(ostream & out, const Matrix4f & m);
 // convert Matrix4f to glm::mat4
 glm::mat4 Matrix4f2mat4(Matrix4f mat);
 
-
 // check equivalence of Matrix4f and glm::mat4
 bool mateq(Matrix4f, glm::mat4);
 
+// get glfw time as float
+float glfwGetTimef();
+
+// return a vector of square coordinates
+std::vector<glm::vec3> make_square_tris(float size = 0.5f);
 
 #endif

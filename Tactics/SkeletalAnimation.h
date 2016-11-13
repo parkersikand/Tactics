@@ -73,8 +73,7 @@ namespace Tactics {
 
 			// map of node names to animations
 			aiAnimation * defaultAnimation;
-			// map of node names to node animations
-			//std::map<std::string, aiNodeAnim *> named_animations;
+
 			// map of animation name to map of node names and animations
 			std::map<std::string, std::map<std::string, aiNodeAnim*>> named_node_animations;
 			std::map<std::string, aiAnimation *> named_animations;
