@@ -14,7 +14,7 @@ using namespace Tactics::ECS;
 WalkingBodyWorld::WalkingBodyWorld() {
 //	addRunnableGlobalSystem(updater);
 	EventDispatcher::registerEventHandler<Tactics::Events::KeyDown>(updater);
-	EventDispatcher::registerEventHandler<Tactics::Events::KeyUp>(updater);
+	EventDispatcher::registerEventHandler<Tactics::Events::KeyUp>(updater); 
 
 	// create event firing system
 	auto * firing = createManagedSystem<Tactics::TimedFiringSystem<BodyUpdateEvent>>();
