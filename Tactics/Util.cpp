@@ -144,10 +144,10 @@ float glfwGetTimef() {
 
 vector<glm::vec3> make_square_tris(float size) {
 	vector<glm::vec3> out;
-	out.push_back(glm::vec3(-size / 2, -size / 2, 0));
-	out.push_back(glm::vec3(-size / 2, size / 2, 0));
-	out.push_back(glm::vec3(size / 2, size / 2, 0));
-	out.push_back(glm::vec3(size / 2, size / 2, 0));
-	out.push_back(glm::vec3(size / 2, -size / 2, 0));
-	out.push_back(glm::vec3(-size / 2, -size / 2, 0));
+	float hsize = size / 2;
+	out.push_back(glm::vec3(-hsize, -hsize, 0));
+	out.push_back(glm::vec3(hsize, -hsize, 0));
+	out.push_back(glm::vec3(-hsize, hsize, 0));
+	out.push_back(glm::vec3(hsize, hsize, 0));
+	return out;
 }

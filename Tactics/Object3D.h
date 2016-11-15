@@ -81,6 +81,17 @@ namespace Tactics {
 			static void SingleColor(Colored3D *, CObject3D *, glm::vec3 color = glm::vec3(0.f, 0.f, 0.f));
 		};
 
+		// Billboard that varies in size as it gets further from the camera
+		struct BillboardVarying : public ECS::Component {
+			float width, height;
+			glm::vec3 center;
+		};
+
+		struct BillboardFixed : public ECS::Component {
+			float width, height;
+			glm::vec3 center;
+		};
+
 	} // namespace Components
 
 } // namespace Tactics

@@ -45,6 +45,14 @@ Systems::BasicDrawSystem::BasicDrawSystem() {
 	glGenBuffers(1, &uvVBO);
 	glGenBuffers(1, &normVBO);
 	glGenBuffers(1, &colorVBO);
+
+	// load billboard program
+	billboardProgramId = Util::ShaderProgramHelper::LoadShaders("shaders/billboard/vertex.glsl", "shaders/billboard/fragment.glsl");
+	billboardViewU = glGetUniformLocation(billboardProgramId, "view_matrix");
+	billboardSizeU = glGetUniformLocation(billboardProgramId, "billboardSize");
+	billboardCenterU = glGetUniformLocation(billboardProgramId, "billboardCenter");
+	billboardUseTextureU = glGetUniformLocation(billboardProgramId, "useTexture");
+	billboardProjectionU = glGetUniformLocation(billboardProgramId, "projection_matrix");
 }
 
 struct TexIDSorter {
@@ -265,6 +273,61 @@ void Systems::BasicDrawSystem::HandleSkeletal(Components::SkeletalAnimationContr
 
 }
 
+void Systems::BasicDrawSystem::drawBillboardVarying(ECS::Entity & entity) {
+	auto * billboardVarying = entity.getComponent<Components::BillboardVarying>();
+
+	// use billboard program
+	glUseProgram(billboardProgramId);
+
+	// diable depth test
+	glDepthFunc(GL_ALWAYS);
+
+	// set camera info
+	auto * cameraSystem = getWorld()->getGlobalSystem<CameraSystem>();
+	auto vm = cameraSystem->getViewMatrix();
+	glUniformMatrix4fv(billboardViewU, 1, GL_FALSE, &vm[0][0]);
+
+	//auto ivm = glm::inverse(vm);
+	//auto cameraRightWorld = glm::normalize(glm::vec3(ivm[0][0], ivm[0][1], ivm[0][2]));
+	//auto cameraUpWorld = glm::normalize(glm::vec3(ivm[1][0], ivm[1][1], ivm[1][2]));
+	//glUniform3fv(billboardCameraRightU, 1, &cameraRightWorld[0]);
+	//glUniform3fv(billboardCameraUpU, 1, &cameraUpWorld[0]);
+
+	auto pm = cameraSystem->getProjectionMatrix();
+	glUniformMatrix4fv(billboardProjectionU, 1, GL_FALSE, &pm[0][0]);
+
+	// send center
+	glUniform3fv(billboardCenterU, 1, &billboardVarying->center[0]);
+
+	// send size
+	glm::vec2 sz(billboardVarying->width, billboardVarying->height);
+	glUniform2fv(billboardSizeU, 1, &sz[0]);
+	
+	// load 3d data
+	auto * o3d = entity.getComponent<Components::CObject3D>();
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, o3d->vxBufId);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, o3d->uvBufId);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void *)0);
+
+	// check for color component
+	auto * col3d = entity.getComponent<Components::Colored3D>();
+	if (col3d != NULL) {
+		glUniform1ui(billboardUseTextureU, GL_FALSE);
+		glEnableVertexAttribArray(3);
+		glBindBuffer(GL_ARRAY_BUFFER, col3d->bufId);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (void *)0);
+	}
+
+	glDrawArrays(o3d->drawMode, 0, o3d->count);
+
+	// restore program
+	glUseProgram(programId);
+	glDepthFunc(GL_LESS);
+}
+
 // draw unbatched objects
 void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 	glClearErrors();
@@ -291,6 +354,13 @@ void Systems::BasicDrawSystem::draw(std::vector<ECS::Entity> & entities) {
 	for (auto & e : entities) {
 		auto * bc = e.getComponent<Components::BasicDrawSystemBatch>();
 		if (bc != nullptr && bc->isBatched) continue;
+
+		// check for billboard
+		auto * billV = e.getComponent<Components::BillboardVarying>();
+		if (billV) {
+			drawBillboardVarying(e);
+			continue;
+		}
 
 		// by default, assume there is a texture
 		glUniform1ui(useTextureU, GL_TRUE);

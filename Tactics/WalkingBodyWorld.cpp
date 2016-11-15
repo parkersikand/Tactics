@@ -59,9 +59,14 @@ void WalkingBodyWorld::setup() {
 	EntityHdl billboardHdl = newEntity();
 	addComponent<Components::DrawSystemTag<Systems::BasicDrawSystem>>(billboardHdl);
 	auto * b3d = getComponent<Components::CObject3D>(billboardHdl);
-	Components::CObject3DHelper::setData(b3d, make_square_tris(), {}, {});
+	Components::CObject3DHelper::setData(b3d, make_square_tris(1.f), {}, {});
+	b3d->drawMode = GL_TRIANGLE_STRIP;
 	auto * billColor = addComponent<Components::Colored3D>(billboardHdl);
 	Components::Colored3DHelper::SingleColor(billColor, b3d, glm::vec3(1.f, 1.f, 0.f));
+	auto * billV = addComponent<Components::BillboardVarying>(billboardHdl);
+	updater.billboard = billV;
+	billV->width = 10.f;
+	billV->height = 1.f;
 }
 
 
@@ -101,5 +106,6 @@ void WalkingBodyWorld::BodyUpdater::handle(const BodyUpdateEvent &) {
 	if (walking) {
 		position->x += sin(facing) * walkSpeed;
 		position->z += cos(facing) * walkSpeed;
+		billboard->center = glm::vec3(position->x, 0, position->z);
 	}
 }

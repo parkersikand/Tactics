@@ -23,6 +23,7 @@ public:
 		Tactics::Components::ModelTransform * modelTransform;
 		Tactics::Components::SkeletalAnimationController * animationController;
 		Tactics::Components::Position3D<> * position;
+		Tactics::Components::BillboardVarying * billboard;
 
 		float facing = 0.f;
 		float walkSpeed = 0.1f;

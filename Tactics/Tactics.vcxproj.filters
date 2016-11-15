@@ -100,6 +100,9 @@
     <Filter Include="Header Files\ogldev">
       <UniqueIdentifier>{e183a697-7c03-4837-95a0-bee36b64fe96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\billboard">
+      <UniqueIdentifier>{0e4913b2-7f58-4aa2-86dc-9189fbd0a83a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -310,6 +313,12 @@
     </None>
     <None Include="shaders\toon1\vertex.glsl">
       <Filter>Resource Files\shaders\toon1</Filter>
+    </None>
+    <None Include="shaders\billboard\vertex.glsl">
+      <Filter>Resource Files\shaders\billboard</Filter>
+    </None>
+    <None Include="shaders\billboard\fragment.glsl">
+      <Filter>Resource Files\shaders\billboard</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

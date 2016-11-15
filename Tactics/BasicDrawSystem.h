@@ -47,6 +47,8 @@ namespace Tactics {
 
 			void drawMulti(ECS::EntityHdl);
 
+			void drawBillboardVarying(ECS::Entity &);
+
 		private:
 
 			// a batch of objects for the basic draw system
@@ -76,12 +78,18 @@ namespace Tactics {
 				GLuint vxVBO, normVBO, uvVBO, colorVBO;
 			};
 
+			// Top level program
 			GLuint programId;
 
 			// uniforms
 			GLuint viewU, projectionU, modelTransformU, tiModelTransformU, useTextureU, textureHW, hwLightDir, viewDirectionU;
 			GLuint cameraPosU;
 			GLuint isSkeletalU;
+
+			// sub programs
+			GLuint billboardProgramId;
+			GLuint billboardSizeU, billboardViewU, billboardProjectionU, billboardModelTransformU, billboardUseTextureU;
+			GLuint billboardCenterU;
 
 			// batched VBOS
 			GLuint vxVBO, uvVBO, normVBO, colorVBO;

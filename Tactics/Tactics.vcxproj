@@ -254,6 +254,8 @@
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\billboard\fragment.glsl" />
+    <None Include="shaders\billboard\vertex.glsl" />
     <None Include="shaders\colored\fragment.glsl" />
     <None Include="shaders\colored\vertex.glsl" />
     <None Include="shaders\heightmap\fragment.glsl" />
